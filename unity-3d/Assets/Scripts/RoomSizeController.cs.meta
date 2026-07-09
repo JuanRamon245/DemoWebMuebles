@@ -13,7 +13,7 @@ MonoImporter:
   - texturaLadrillo: {instanceID: 0}
   - texturaAzulejoBlanco: {instanceID: 0}
   - texturaAzulejoAzul: {instanceID: 0}
-  - texturaCuadrcula: {instanceID: 0}
+  - texturaCuadricula: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

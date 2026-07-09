@@ -26,15 +26,19 @@ public class RoomSizeController : MonoBehaviour
     public Texture2D texturaLadrillo;
     public Texture2D texturaAzulejoBlanco;
     public Texture2D texturaAzulejoAzul;
-    public Texture2D texturaCuadrcula;
 
-    // Variables para optimizar y no buscar el MeshRenderer cada frame
     private MeshRenderer mrFloor, mrNorth, mrSouth, mrEast, mrWest;
+    private Texture2D cuadrculaProcedural;
+
+    private Material matSuelo;
+    private Material matParedesNS; // Norte y Sur
+    private Material matParedesEW; // Este y Oeste
 
     void Start()
     {
         ObtenerRenderers();
     }
+
     void ObtenerRenderers()
     {
         if (floor != null) mrFloor = floor.GetComponent<MeshRenderer>();
@@ -49,10 +53,31 @@ public class RoomSizeController : MonoBehaviour
         UpdateRoomSize();
     }
 
+    // Inicializa o recupera los materiales independientes para cada grupo
+    void InicializarMateriales()
+    {
+        if (mrFloor == null) ObtenerRenderers();
+
+        if (matSuelo == null && mrFloor != null && mrFloor.sharedMaterial != null) matSuelo = new Material(mrFloor.sharedMaterial);
+        if (matParedesNS == null && mrNorth != null && mrNorth.sharedMaterial != null) matParedesNS = new Material(mrNorth.sharedMaterial);
+        if (matParedesEW == null && mrEast != null && mrEast.sharedMaterial != null) matParedesEW = new Material(mrEast.sharedMaterial);
+
+        Shader stdShader = Shader.Find("Standard");
+        if (matSuelo == null) matSuelo = new Material(stdShader);
+        if (matParedesNS == null) matParedesNS = new Material(stdShader);
+        if (matParedesEW == null) matParedesEW = new Material(stdShader);
+
+        if (mrFloor != null && mrFloor.sharedMaterial != matSuelo) mrFloor.sharedMaterial = matSuelo;
+        if (mrNorth != null && mrNorth.sharedMaterial != matParedesNS) mrNorth.sharedMaterial = matParedesNS;
+        if (mrSouth != null && mrSouth.sharedMaterial != matParedesNS) mrSouth.sharedMaterial = matParedesNS;
+        if (mrEast != null && mrEast.sharedMaterial != matParedesEW) mrEast.sharedMaterial = matParedesEW;
+        if (mrWest != null && mrWest.sharedMaterial != matParedesEW) mrWest.sharedMaterial = matParedesEW;
+    }
+
     public void UpdateRoomSize()
     {
         if (floor == null || wallNorth == null || wallSouth == null || wallEast == null || wallWest == null) return;
-        if (mrFloor == null) ObtenerRenderers();
+        InicializarMateriales();
 
         // 1. Escalar y posicionar el SUELO
         floor.localScale = new Vector3(width, THICKNESS, length);
@@ -84,60 +109,97 @@ public class RoomSizeController : MonoBehaviour
         switch (habitacionActual)
         {
             case TipoHabitacion.SinTexturas:
-                ConfigurarSuperficie(mrFloor, null, Color.gray, width, length);
-                ConfigurarSuperficie(mrNorth, null, Color.white, width, HEIGHT);
-                ConfigurarSuperficie(mrSouth, null, Color.white, width, HEIGHT);
-                ConfigurarSuperficie(mrEast, null, Color.white, length, HEIGHT);
-                ConfigurarSuperficie(mrWest, null, Color.white, length, HEIGHT);
+                ConfigurarSuperficie(matSuelo, null, Color.gray, width, length);
+                ConfigurarSuperficie(matParedesNS, null, Color.white, width, HEIGHT);
+                ConfigurarSuperficie(matParedesEW, null, Color.white, length, HEIGHT);
                 break;
 
             case TipoHabitacion.Dormitorio:
-                ConfigurarSuperficie(mrFloor, texturaMadera, Color.white, width, length);
-                ConfigurarSuperficie(mrNorth, null, colorTortilla, width, HEIGHT);
-                ConfigurarSuperficie(mrSouth, null, colorTortilla, width, HEIGHT);
-                ConfigurarSuperficie(mrEast, null, colorTortilla, length, HEIGHT);
-                ConfigurarSuperficie(mrWest, null, colorTortilla, length, HEIGHT);
+                ConfigurarSuperficie(matSuelo, texturaMadera, Color.white, width, length);
+                ConfigurarSuperficie(matParedesNS, null, colorTortilla, width, HEIGHT);
+                ConfigurarSuperficie(matParedesEW, null, colorTortilla, length, HEIGHT);
                 break;
 
             case TipoHabitacion.Cocina:
-                ConfigurarSuperficie(mrFloor, null, Color.white, width, length);
-                ConfigurarSuperficie(mrNorth, null, Color.white, width, HEIGHT);
-                ConfigurarSuperficie(mrSouth, null, Color.white, width, HEIGHT);
-                ConfigurarSuperficie(mrEast, null, Color.white, length, HEIGHT);
-                ConfigurarSuperficie(mrWest, null, Color.white, length, HEIGHT);
+                ConfigurarSuperficie(matSuelo, texturaAzulejoAzul, Color.white, width, length);
+                ConfigurarSuperficie(matParedesNS, texturaAzulejoBlanco, Color.white, width, HEIGHT);
+                ConfigurarSuperficie(matParedesEW, texturaAzulejoBlanco, Color.white, length, HEIGHT);
                 break;
 
             case TipoHabitacion.Salon:
-                ConfigurarSuperficie(mrFloor, null, Color.white, width, length);
-                ConfigurarSuperficie(mrNorth, null, Color.white, width, HEIGHT);
-                ConfigurarSuperficie(mrSouth, null, Color.white, width, HEIGHT);
-                ConfigurarSuperficie(mrEast, null, Color.white, length, HEIGHT);
-                ConfigurarSuperficie(mrWest, null, Color.white, length, HEIGHT);
+                ConfigurarSuperficie(matSuelo, texturaMadera, Color.white, width, length);
+                ConfigurarSuperficie(matParedesNS, texturaLadrillo, Color.white, width, HEIGHT);
+                ConfigurarSuperficie(matParedesEW, texturaLadrillo, Color.white, length, HEIGHT);
                 break;
         }
     }
-    void ConfigurarSuperficie(MeshRenderer renderer, Texture2D textura, Color color, float scaleX, float scaleY)
+
+    // Ahora configuramos directamente el Material independiente de cada grupo
+    void ConfigurarSuperficie(Material mat, Texture2D textura, Color color, float scaleX, float scaleY)
     {
-        if (renderer == null || renderer.sharedMaterial == null) return;
+        if (mat == null) return;
 
-        Material mat = renderer.sharedMaterial;
-
-        // Asignamos la textura base y el color de tinte
         mat.mainTexture = textura;
-        mat.color = color;
         mat.mainTextureScale = new Vector2(scaleX, scaleY);
 
-        if (mostrarCuadrcula && texturaCuadrcula != null)
+        if (mostrarCuadrcula)
         {
-            mat.SetTexture("_DetailMap", texturaCuadrcula);
-            mat.SetVector("_DetailMap_ST", new Vector4(scaleX, scaleY, 0, 0));
-            mat.SetFloat("_DetailAlbedoMapScale", 1f);
+            if (cuadrculaProcedural == null)
+            {
+                cuadrculaProcedural = GenerarTexturaBordes();
+            }
+
+            if (color == Color.white)
+            {
+                mat.color = new Color(0.82f, 0.84f, 0.86f);
+            }
+            else
+            {
+                mat.color = color;
+            }
+
+            mat.EnableKeyword("_EMISSION");
+            mat.SetTexture("_EmissionMap", cuadrculaProcedural);
+            mat.SetTextureScale("_EmissionMap", new Vector2(scaleX, scaleY));
+            mat.SetColor("_EmissionColor", new Color(0f, 0.65f, 1f) * 4f);
         }
         else
         {
-            mat.SetTexture("_DetailMap", null);
-            mat.SetFloat("_DetailAlbedoMapScale", 0f);
+            mat.color = color;
+            mat.SetTexture("_EmissionMap", null);
+            mat.SetColor("_EmissionColor", Color.black);
+            mat.DisableKeyword("_EMISSION");
         }
+    }
+
+    private Texture2D GenerarTexturaBordes()
+    {
+        int resolucion = 128;
+        Texture2D tex = new Texture2D(resolucion, resolucion);
+        tex.filterMode = FilterMode.Point;
+        tex.wrapMode = TextureWrapMode.Repeat;
+
+        Color transparente = new Color(0f, 0f, 0f, 0f);
+        Color bordeBlanco = Color.white;
+        int grosorPíxeles = 1;
+
+        for (int y = 0; y < resolucion; y++)
+        {
+            for (int x = 0; x < resolucion; x++)
+            {
+                if (x < grosorPíxeles || x >= resolucion - grosorPíxeles ||
+                    y < grosorPíxeles || y >= resolucion - grosorPíxeles)
+                {
+                    tex.SetPixel(x, y, bordeBlanco);
+                }
+                else
+                {
+                    tex.SetPixel(x, y, transparente);
+                }
+            }
+        }
+        tex.Apply();
+        return tex;
     }
 
     void Update()
