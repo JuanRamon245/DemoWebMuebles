@@ -1,2 +1,21 @@
 fileFormatVersion: 2
 guid: f2687308b65aafa4c865792d9d84c771
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - floor: {instanceID: 0}
+  - wallNorth: {instanceID: 0}
+  - wallSouth: {instanceID: 0}
+  - wallEast: {instanceID: 0}
+  - wallWest: {instanceID: 0}
+  - texturaMadera: {fileID: 2800000, guid: 8fd975ce98998014d9a908a37ab17d0c, type: 3}
+  - texturaLadrillo: {instanceID: 0}
+  - texturaAzulejoBlanco: {instanceID: 0}
+  - texturaAzulejoAzul: {instanceID: 0}
+  - texturaCuadrcula: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

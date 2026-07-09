@@ -148,7 +148,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.5, z: 7.5}
-  m_LocalScale: {x: 5.1, y: 3, z: 0.1}
+  m_LocalScale: {x: 8.4, y: 3, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1447986778}
@@ -199,7 +199,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 72bfb685a955a1e44a305dc4ecc8f541, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -260,7 +260,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.05, z: 0}
-  m_LocalScale: {x: 5.1, y: 0.1, z: 15}
+  m_LocalScale: {x: 8.4, y: 0.1, z: 15}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1447986778}
@@ -311,7 +311,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: e45c8773c8a486e498d4dfd88293d35e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -650,7 +650,7 @@ Transform:
   m_GameObject: {fileID: 628264481}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.55, y: 1.5, z: 0}
+  m_LocalPosition: {x: 4.2, y: 1.5, z: 0}
   m_LocalScale: {x: 0.1, y: 3, z: 15}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -702,7 +702,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 72bfb685a955a1e44a305dc4ecc8f541, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -763,7 +763,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.5, z: -7.5}
-  m_LocalScale: {x: 5.1, y: 3, z: 0.1}
+  m_LocalScale: {x: 8.4, y: 3, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1447986778}
@@ -814,7 +814,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 72bfb685a955a1e44a305dc4ecc8f541, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -923,7 +923,7 @@ Transform:
   m_GameObject: {fileID: 1220058017}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.55, y: 1.5, z: 0}
+  m_LocalPosition: {x: -4.2, y: 1.5, z: 0}
   m_LocalScale: {x: 0.1, y: 3, z: 15}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -975,7 +975,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 72bfb685a955a1e44a305dc4ecc8f541, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1036,13 +1036,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2687308b65aafa4c865792d9d84c771, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomSizeController
+  habitacionActual: 1
+  mostrarCuadrcula: 0
   floor: {fileID: 150582252}
   wallNorth: {fileID: 68179292}
   wallSouth: {fileID: 642677645}
   wallEast: {fileID: 628264482}
   wallWest: {fileID: 1220058018}
-  width: 5.1
+  width: 8.4
   length: 15
+  texturaMadera: {fileID: 2800000, guid: 8fd975ce98998014d9a908a37ab17d0c, type: 3}
+  texturaLadrillo: {fileID: 0}
+  texturaAzulejoBlanco: {fileID: 0}
+  texturaAzulejoAzul: {fileID: 0}
+  texturaCuadrcula: {fileID: 0}
 --- !u!4 &1447986778
 Transform:
   m_ObjectHideFlags: 0

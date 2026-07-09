@@ -2,6 +2,12 @@ using UnityEngine;
 
 public class RoomSizeController : MonoBehaviour
 {
+    public enum TipoHabitacion { SinTexturas, Dormitorio, Cocina, Salon }
+
+    [Header("Configuración de Estilo")]
+    public TipoHabitacion habitacionActual = TipoHabitacion.SinTexturas;
+    public bool mostrarCuadrcula = true;
+
     [Header("Componentes de la Habitación")]
     public Transform floor;
     public Transform wallNorth;
@@ -15,11 +21,23 @@ public class RoomSizeController : MonoBehaviour
     private const float HEIGHT = 3f;
     private const float THICKNESS = 0.1f;
 
+    [Header("Banco de Texturas")]
+    public Texture2D texturaMadera;
+    public Texture2D texturaLadrillo;
+    public Texture2D texturaAzulejoBlanco;
+    public Texture2D texturaAzulejoAzul;
+    public Texture2D texturaCuadrcula;
+
     // Variables para optimizar y no buscar el MeshRenderer cada frame
-    private MeshRenderer mrNorth, mrSouth, mrEast, mrWest;
+    private MeshRenderer mrFloor, mrNorth, mrSouth, mrEast, mrWest;
 
     void Start()
     {
+        ObtenerRenderers();
+    }
+    void ObtenerRenderers()
+    {
+        if (floor != null) mrFloor = floor.GetComponent<MeshRenderer>();
         if (wallNorth != null) mrNorth = wallNorth.GetComponent<MeshRenderer>();
         if (wallSouth != null) mrSouth = wallSouth.GetComponent<MeshRenderer>();
         if (wallEast != null) mrEast = wallEast.GetComponent<MeshRenderer>();
@@ -34,6 +52,7 @@ public class RoomSizeController : MonoBehaviour
     public void UpdateRoomSize()
     {
         if (floor == null || wallNorth == null || wallSouth == null || wallEast == null || wallWest == null) return;
+        if (mrFloor == null) ObtenerRenderers();
 
         // 1. Escalar y posicionar el SUELO
         floor.localScale = new Vector3(width, THICKNESS, length);
@@ -55,20 +74,69 @@ public class RoomSizeController : MonoBehaviour
         wallWest.localScale = new Vector3(THICKNESS, HEIGHT, length);
         wallWest.localPosition = new Vector3(-width / 2, HEIGHT / 2, 0);
 
-        // Ajustar el Tiling de la cuadrícula para que no se deforme
-        AdjustGridTiling(floor, width, length);
-        AdjustGridTiling(wallNorth, width, HEIGHT);
-        AdjustGridTiling(wallSouth, width, HEIGHT);
-        AdjustGridTiling(wallEast, length, HEIGHT);
-        AdjustGridTiling(wallWest, length, HEIGHT);
+        AplicarEstiloHabitacion();
     }
 
-    void AdjustGridTiling(Transform obj, float scaleX, float scaleY)
+    void AplicarEstiloHabitacion()
     {
-        MeshRenderer renderer = obj.GetComponent<MeshRenderer>();
-        if (renderer != null && renderer.sharedMaterial != null)
+        Color colorTortilla = new Color(0.92f, 0.85f, 0.46f);
+
+        switch (habitacionActual)
         {
-            renderer.sharedMaterial.mainTextureScale = new Vector2(scaleX, scaleY);
+            case TipoHabitacion.SinTexturas:
+                ConfigurarSuperficie(mrFloor, null, Color.gray, width, length);
+                ConfigurarSuperficie(mrNorth, null, Color.white, width, HEIGHT);
+                ConfigurarSuperficie(mrSouth, null, Color.white, width, HEIGHT);
+                ConfigurarSuperficie(mrEast, null, Color.white, length, HEIGHT);
+                ConfigurarSuperficie(mrWest, null, Color.white, length, HEIGHT);
+                break;
+
+            case TipoHabitacion.Dormitorio:
+                ConfigurarSuperficie(mrFloor, texturaMadera, Color.white, width, length);
+                ConfigurarSuperficie(mrNorth, null, colorTortilla, width, HEIGHT);
+                ConfigurarSuperficie(mrSouth, null, colorTortilla, width, HEIGHT);
+                ConfigurarSuperficie(mrEast, null, colorTortilla, length, HEIGHT);
+                ConfigurarSuperficie(mrWest, null, colorTortilla, length, HEIGHT);
+                break;
+
+            case TipoHabitacion.Cocina:
+                ConfigurarSuperficie(mrFloor, null, Color.white, width, length);
+                ConfigurarSuperficie(mrNorth, null, Color.white, width, HEIGHT);
+                ConfigurarSuperficie(mrSouth, null, Color.white, width, HEIGHT);
+                ConfigurarSuperficie(mrEast, null, Color.white, length, HEIGHT);
+                ConfigurarSuperficie(mrWest, null, Color.white, length, HEIGHT);
+                break;
+
+            case TipoHabitacion.Salon:
+                ConfigurarSuperficie(mrFloor, null, Color.white, width, length);
+                ConfigurarSuperficie(mrNorth, null, Color.white, width, HEIGHT);
+                ConfigurarSuperficie(mrSouth, null, Color.white, width, HEIGHT);
+                ConfigurarSuperficie(mrEast, null, Color.white, length, HEIGHT);
+                ConfigurarSuperficie(mrWest, null, Color.white, length, HEIGHT);
+                break;
+        }
+    }
+    void ConfigurarSuperficie(MeshRenderer renderer, Texture2D textura, Color color, float scaleX, float scaleY)
+    {
+        if (renderer == null || renderer.sharedMaterial == null) return;
+
+        Material mat = renderer.sharedMaterial;
+
+        // Asignamos la textura base y el color de tinte
+        mat.mainTexture = textura;
+        mat.color = color;
+        mat.mainTextureScale = new Vector2(scaleX, scaleY);
+
+        if (mostrarCuadrcula && texturaCuadrcula != null)
+        {
+            mat.SetTexture("_DetailMap", texturaCuadrcula);
+            mat.SetVector("_DetailMap_ST", new Vector4(scaleX, scaleY, 0, 0));
+            mat.SetFloat("_DetailAlbedoMapScale", 1f);
+        }
+        else
+        {
+            mat.SetTexture("_DetailMap", null);
+            mat.SetFloat("_DetailAlbedoMapScale", 0f);
         }
     }
 
@@ -78,16 +146,9 @@ public class RoomSizeController : MonoBehaviour
 
         Vector3 localCamPos = transform.InverseTransformPoint(Camera.main.transform.position);
 
-        if (mrNorth != null)
-            mrNorth.enabled = (localCamPos.z < (length / 2) - 0.1f);
-
-        if (mrSouth != null)
-            mrSouth.enabled = (localCamPos.z > -(length / 2) + 0.1f);
-
-        if (mrEast != null)
-            mrEast.enabled = (localCamPos.x < (width / 2) - 0.1f);
-
-        if (mrWest != null)
-            mrWest.enabled = (localCamPos.x > -(width / 2) + 0.1f);
+        if (mrNorth != null) mrNorth.enabled = (localCamPos.z < (length / 2) - 0.1f);
+        if (mrSouth != null) mrSouth.enabled = (localCamPos.z > -(length / 2) + 0.1f);
+        if (mrEast != null) mrEast.enabled = (localCamPos.x < (width / 2) - 0.1f);
+        if (mrWest != null) mrWest.enabled = (localCamPos.x > -(width / 2) + 0.1f);
     }
 }
