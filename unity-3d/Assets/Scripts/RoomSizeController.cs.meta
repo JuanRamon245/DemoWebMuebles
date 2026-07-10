@@ -9,11 +9,10 @@ MonoImporter:
   - wallSouth: {instanceID: 0}
   - wallEast: {instanceID: 0}
   - wallWest: {instanceID: 0}
-  - texturaMadera: {fileID: 2800000, guid: 8fd975ce98998014d9a908a37ab17d0c, type: 3}
+  - texturaMadera: {instanceID: 0}
   - texturaLadrillo: {instanceID: 0}
   - texturaAzulejoBlanco: {instanceID: 0}
   - texturaAzulejoAzul: {instanceID: 0}
-  - texturaCuadricula: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
