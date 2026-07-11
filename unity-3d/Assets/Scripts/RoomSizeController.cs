@@ -27,16 +27,15 @@ public class RoomSizeController : MonoBehaviour
     public Texture2D texturaAzulejoBlanco;
     public Texture2D texturaAzulejoAzul;
 
-    [Header("Prefabs por Habitación")]
-    public GameObject prefabDormitorio;
-    public GameObject prefabCocina;
-    public GameObject prefabSalon;
+    [Header("Prefabs Pared Norte (3 seguidos, 2 huecos)")]
+    public GameObject norteDormitorio;
+    public GameObject norteCocina;
+    public GameObject norteSalon;
 
-    [Header("Ajustes de los Muebles")]
-    [Tooltip("Modifica este valor para ajustar el tamaño real. Si tu mueble mide 2m en Blender, pon 0.4 en la X para que mida 80cm.")]
-    public Vector3 escalaMuebles = new Vector3(0.4f, 1f, 1f);
-    [Tooltip("Grosor del mueble (del fondo al frente) para pegarlo perfectamente a la cara interna del muro.")]
-    public float profundidadMueble = 0.3f;
+    [Header("Prefabs Pared Sur (1 cada 4, inicio en casilla 2)")]
+    public GameObject surDormitorio;
+    public GameObject surCocina;
+    public GameObject surSalon;
 
     private MeshRenderer mrFloor, mrNorth, mrSouth, mrEast, mrWest;
     private Texture2D cuadrculaProcedural;
@@ -65,8 +64,8 @@ public class RoomSizeController : MonoBehaviour
         ActualizarGeometriaMuros();
 
 #if UNITY_EDITOR
-        UnityEditor.EditorApplication.delayCall -= ReconstruirDecoracionSegura;
-        UnityEditor.EditorApplication.delayCall += ReconstruirDecoracionSegura;
+            UnityEditor.EditorApplication.delayCall -= ReconstruirDecoracionSegura;
+            UnityEditor.EditorApplication.delayCall += ReconstruirDecoracionSegura;
 #endif
     }
 
@@ -87,18 +86,23 @@ public class RoomSizeController : MonoBehaviour
 
         floor.localScale = new Vector3(width, THICKNESS, length);
         floor.localPosition = new Vector3(0, -THICKNESS / 2, 0);
+        floor.localRotation = Quaternion.Euler(0, 0, 0);
 
         wallNorth.localScale = new Vector3(width, HEIGHT, THICKNESS);
         wallNorth.localPosition = new Vector3(0, HEIGHT / 2, length / 2);
+        wallNorth.localRotation = Quaternion.Euler(0, 180, 0);
 
         wallSouth.localScale = new Vector3(width, HEIGHT, THICKNESS);
         wallSouth.localPosition = new Vector3(0, HEIGHT / 2, -length / 2);
+        wallSouth.localRotation = Quaternion.Euler(0, 0, 0);
 
-        wallEast.localScale = new Vector3(THICKNESS, HEIGHT, length);
+        wallEast.localScale = new Vector3(length, HEIGHT, THICKNESS);
         wallEast.localPosition = new Vector3(width / 2, HEIGHT / 2, 0);
+        wallEast.localRotation = Quaternion.Euler(0, -90, 0);
 
-        wallWest.localScale = new Vector3(THICKNESS, HEIGHT, length);
+        wallWest.localScale = new Vector3(length, HEIGHT, THICKNESS);
         wallWest.localPosition = new Vector3(-width / 2, HEIGHT / 2, 0);
+        wallWest.localRotation = Quaternion.Euler(0, 90, 0);
 
         AplicarEstiloHabitacion();
     }
@@ -199,29 +203,70 @@ public class RoomSizeController : MonoBehaviour
     {
         LimpiarDecoracionPrevia();
 
-        GameObject assetAInstanciar = null;
-        Color colorMueble = Color.white;
+        // 1. DEFINICIÓN DE CONFIGURACIONES POR OBJETO INDIVIDUAL
+        GameObject prefabParaNorte = null;
+        bool pintarNorte = false;
+        float profNorte = 0.3f;
+        Vector3 rotExtraNorte = Vector3.zero;
+        Color colorNorte = Color.white;
 
+        GameObject prefabParaSur = null;
+        bool pintarSur = false;
+        float profSur = 0.3f;
+        Vector3 rotExtraSur = Vector3.zero;
+        Color colorSur = Color.white;
+
+        // 2. CONFIGURACIÓN EN DETALLE DENTRO DEL SWITCH
         switch (habitacionActual)
         {
             case TipoHabitacion.Dormitorio:
-                assetAInstanciar = prefabDormitorio;
-                colorMueble = new Color(0.45f, 0.28f, 0.15f); // Un marrón madera más marcado
+                // Estantes flotantes con libros
+                prefabParaNorte = norteDormitorio;
+                pintarNorte = true;
+                profNorte = 0.15f;
+                rotExtraNorte = Vector3.zero;
+                colorNorte = new Color(0.45f, 0.28f, 0.15f);
+
+                // Lámparas de luz
+                prefabParaSur = surDormitorio;
+                pintarSur = true;
+                profSur = -0.1f;
+                rotExtraSur = new Vector3(270, 0, 0);
+                colorSur = new Color(0.96f, 0.96f, 0.96f);
                 break;
+
             case TipoHabitacion.Cocina:
-                assetAInstanciar = prefabCocina;
-                colorMueble = new Color(0.85f, 0.85f, 0.88f);
+                // Armarios colgantes
+                prefabParaNorte = norteCocina;
+                pintarNorte = true;
+                profNorte = 0.35f;
+                rotExtraNorte = Vector3.zero;
+                colorNorte = new Color(0.96f, 0.97f, 1.00f);
+
+                // Reloj de pared
+                prefabParaSur = surCocina;
+                pintarSur = false;
+                profSur = -0.1f;
+                rotExtraSur = new Vector3(90, 0, 0);
+                colorSur = new Color(0.3f, 0.3f, 0.32f);
                 break;
+
             case TipoHabitacion.Salon:
-                assetAInstanciar = prefabSalon;
-                colorMueble = new Color(0.25f, 0.25f, 0.25f);
-                break;
-            case TipoHabitacion.SinTexturas:
-                assetAInstanciar = null;
+                // Estantes flotantes con libros
+                prefabParaNorte = norteSalon;
+                pintarNorte = true;
+                profNorte = 0.15f;
+                rotExtraNorte = Vector3.zero;
+                colorNorte = new Color(0.2f, 0.2f, 0.2f);
+
+                // Minicuadro
+                prefabParaSur = surSalon;
+                pintarSur = true;
+                profSur = -0.1f;
+                rotExtraSur = Vector3.zero;
+                colorSur = new Color(0.7f, 0.4f, 0.2f);
                 break;
         }
-
-        if (assetAInstanciar == null) return;
 
         GameObject contenedor = new GameObject(CONTENEDOR_NAME);
         contenedor.transform.SetParent(this.transform);
@@ -229,77 +274,78 @@ public class RoomSizeController : MonoBehaviour
         contenedor.transform.localRotation = Quaternion.identity;
 
         float alturaEstanteria = 1.7f;
-        int casillaInicial = 2;
-        int repetirCada = 5;
 
-        // --- PARED NORTE ---
-        float offsetZ_Norte = (length / 2f) - THICKNESS - (profundidadMueble / 2f);
-        for (int x = 0; x < Mathf.FloorToInt(width); x++)
+        // --- PARED NORTE: 3 consecutivos, 2 huecos ---
+        if (prefabParaNorte != null)
         {
-            if ((x - casillaInicial) % repetirCada == 0 && x < width - 0.5f)
+            float offsetZ_Norte = (length / 2f) - THICKNESS - (profNorte / 2f);
+            for (int x = 0; x < Mathf.FloorToInt(width); x++)
             {
-                float posX = -width / 2f + x + 0.5f;
-                Vector3 pos = new Vector3(posX, alturaEstanteria, offsetZ_Norte);
-                InstanciarAsset(assetAInstanciar, pos, Quaternion.Euler(0, 180, 0), contenedor.transform, colorMueble);
+                if (x % 5 < 3 && x < width - 0.5f)
+                {
+                    float posX = -width / 2f + x + 0.5f;
+                    Vector3 pos = new Vector3(posX, alturaEstanteria, offsetZ_Norte);
+
+                    Quaternion rotacionPared = Quaternion.Euler(0, 180, 0);
+                    Quaternion rotacionFinal = rotacionPared * Quaternion.Euler(rotExtraNorte);
+
+                    InstanciarAsset(prefabParaNorte, pos, rotacionFinal, contenedor.transform, colorNorte, pintarNorte);
+                }
+            }
+        }
+
+        // --- PARED SUR: 1 cada 4 ---
+        if (prefabParaSur != null)
+        {
+            float offsetZ_Sur = (-length / 2f) + THICKNESS + (profSur / 2f);
+            for (int x = 0; x < Mathf.FloorToInt(width); x++)
+            {
+                if ((x - 1) % 4 == 0 && x < width - 0.5f)
+                {
+                    float posX = -width / 2f + x + 0.5f;
+                    Vector3 pos = new Vector3(posX, alturaEstanteria, offsetZ_Sur);
+
+                    Quaternion rotacionPared = Quaternion.identity;
+                    Quaternion rotacionFinal = rotacionPared * Quaternion.Euler(rotExtraSur);
+
+                    InstanciarAsset(prefabParaSur, pos, rotacionFinal, contenedor.transform, colorSur, pintarSur);
+                }
             }
         }
 
         // --- PARED SUR ---
-        float offsetZ_Sur = (-length / 2f) + THICKNESS + (profundidadMueble / 2f);
-        for (int x = 0; x < Mathf.FloorToInt(width); x++)
-        {
-            if ((x - casillaInicial) % repetirCada == 0 && x < width - 0.5f)
-            {
-                float posX = -width / 2f + x + 0.5f;
-                Vector3 pos = new Vector3(posX, alturaEstanteria, offsetZ_Sur);
-                InstanciarAsset(assetAInstanciar, pos, Quaternion.identity, contenedor.transform, colorMueble);
-            }
-        }
+
 
         // --- PARED ESTE ---
-        float offsetX_Este = (width / 2f) - THICKNESS - (profundidadMueble / 2f);
-        for (int z = 0; z < Mathf.FloorToInt(length); z++)
-        {
-            if ((z - casillaInicial) % repetirCada == 0 && z < length - 0.5f)
-            {
-                float posZ = -length / 2f + z + 0.5f;
-                Vector3 pos = new Vector3(offsetX_Este, alturaEstanteria, posZ);
-                InstanciarAsset(assetAInstanciar, pos, Quaternion.Euler(0, 270, 0), contenedor.transform, colorMueble);
-            }
-        }
+
 
         // --- PARED OESTE ---
-        float offsetX_Oeste = (-width / 2f) + THICKNESS + (profundidadMueble / 2f);
-        for (int z = 0; z < Mathf.FloorToInt(length); z++)
-        {
-            if ((z - casillaInicial) % repetirCada == 0 && z < length - 0.5f)
-            {
-                float posZ = -length / 2f + z + 0.5f;
-                Vector3 pos = new Vector3(offsetX_Oeste, alturaEstanteria, posZ);
-                InstanciarAsset(assetAInstanciar, pos, Quaternion.Euler(0, 90, 0), contenedor.transform, colorMueble);
-            }
-        }
+
+
     }
 
-    void InstanciarAsset(GameObject prefab, Vector3 posLocal, Quaternion rotLocal, Transform padre, Color colorMueble)
+    void InstanciarAsset(GameObject prefab, Vector3 posLocal, Quaternion rotLocal, Transform padre, Color colorMuebleEspecifico, bool aplicarColor)
     {
+        if (prefab == null) return;
+
         GameObject obj = Instantiate(prefab);
         obj.transform.SetParent(padre);
         obj.transform.localPosition = posLocal;
         obj.transform.localRotation = rotLocal;
-        obj.transform.localScale = escalaMuebles;
 
-        Renderer[] renderers = obj.GetComponentsInChildren<Renderer>();
-        MaterialPropertyBlock propBlock = new MaterialPropertyBlock();
-
-        foreach (Renderer r in renderers)
+        if (aplicarColor)
         {
-            r.GetPropertyBlock(propBlock);
+            Renderer[] renderers = obj.GetComponentsInChildren<Renderer>();
+            MaterialPropertyBlock propBlock = new MaterialPropertyBlock();
 
-            propBlock.SetColor("_Color", colorMueble);
-            propBlock.SetColor("_BaseColor", colorMueble);
-
-            r.SetPropertyBlock(propBlock);
+            foreach (Renderer r in renderers)
+            {
+                r.GetPropertyBlock(propBlock);
+                // Ahora aplica directamente el color exclusivo de este tipo de mueble
+                propBlock.SetColor("_Color", colorMuebleEspecifico);
+                propBlock.SetColor("_BaseColor", colorMuebleEspecifico);
+                r.SetPropertyBlock(propBlock);
+            }
         }
     }
 
