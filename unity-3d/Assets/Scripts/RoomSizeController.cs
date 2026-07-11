@@ -27,10 +27,15 @@ public class RoomSizeController : MonoBehaviour
     public Texture2D texturaAzulejoBlanco;
     public Texture2D texturaAzulejoAzul;
 
-    [Header("Prefabs Pared Norte (3 seguidos, 2 huecos)")]
-    public GameObject norteDormitorio;
-    public GameObject norteCocina;
-    public GameObject norteSalon;
+    [Header("Prefabs Pared Norte 1 (3 seguidos, 2 huecos)")]
+    public GameObject norte1Dormitorio;
+    public GameObject norte1Cocina;
+    public GameObject norte1Salon;
+
+    [Header("Prefabs Pared Norte 2 (1 cada 4, despues de la casilla 1)")]
+    public GameObject norte2Dormitorio;
+    public GameObject norte2Cocina;
+    public GameObject norte2Salon;
 
     [Header("Prefabs Pared Sur (1 cada 4, inicio en casilla 2)")]
     public GameObject surDormitorio;
@@ -86,7 +91,7 @@ public class RoomSizeController : MonoBehaviour
 
         floor.localScale = new Vector3(width, THICKNESS, length);
         floor.localPosition = new Vector3(0, -THICKNESS / 2, 0);
-        floor.localRotation = Quaternion.Euler(0, 0, 0);
+        floor.localRotation = Quaternion.Euler(0, 180, 0);
 
         wallNorth.localScale = new Vector3(width, HEIGHT, THICKNESS);
         wallNorth.localPosition = new Vector3(0, HEIGHT / 2, length / 2);
@@ -94,11 +99,11 @@ public class RoomSizeController : MonoBehaviour
 
         wallSouth.localScale = new Vector3(width, HEIGHT, THICKNESS);
         wallSouth.localPosition = new Vector3(0, HEIGHT / 2, -length / 2);
-        wallSouth.localRotation = Quaternion.Euler(0, 0, 0);
+        wallSouth.localRotation = Quaternion.Euler(0, 180, 0);
 
         wallEast.localScale = new Vector3(length, HEIGHT, THICKNESS);
         wallEast.localPosition = new Vector3(width / 2, HEIGHT / 2, 0);
-        wallEast.localRotation = Quaternion.Euler(0, -90, 0);
+        wallEast.localRotation = Quaternion.Euler(0, 90, 0);
 
         wallWest.localScale = new Vector3(length, HEIGHT, THICKNESS);
         wallWest.localPosition = new Vector3(-width / 2, HEIGHT / 2, 0);
@@ -204,11 +209,19 @@ public class RoomSizeController : MonoBehaviour
         LimpiarDecoracionPrevia();
 
         // 1. DEFINICIÓN DE CONFIGURACIONES POR OBJETO INDIVIDUAL
-        GameObject prefabParaNorte = null;
-        bool pintarNorte = false;
-        float profNorte = 0.3f;
-        Vector3 rotExtraNorte = Vector3.zero;
-        Color colorNorte = Color.white;
+        GameObject prefabParaNorte1 = null;
+        bool pintarNorte1 = false;
+        float profNorte1 = 0.3f;
+        Vector3 rotExtraNorte1 = Vector3.zero;
+        Color colorNorte1 = Color.white;
+
+        GameObject prefabParaNorte2 = null;
+        bool pintarNorte2 = false;
+        float profNorte2 = 0.3f;
+        float correcionNorte2Y = 3.3f;
+        float correcionNorte2Z = 0.3f;
+        Vector3 rotExtraNorte2 = Vector3.zero;
+        Color colorNorte2 = Color.white;
 
         GameObject prefabParaSur = null;
         bool pintarSur = false;
@@ -221,11 +234,20 @@ public class RoomSizeController : MonoBehaviour
         {
             case TipoHabitacion.Dormitorio:
                 // Estantes flotantes con libros
-                prefabParaNorte = norteDormitorio;
-                pintarNorte = true;
-                profNorte = 0.15f;
-                rotExtraNorte = Vector3.zero;
-                colorNorte = new Color(0.45f, 0.28f, 0.15f);
+                prefabParaNorte1 = norte1Dormitorio;
+                pintarNorte1 = true;
+                profNorte1 = 0.15f;
+                rotExtraNorte1 = Vector3.zero;
+                colorNorte1 = new Color(0.45f, 0.28f, 0.15f);
+
+                // Mesilla de dormir
+                prefabParaNorte2 = norte2Dormitorio;
+                correcionNorte2Y = -0.35f;
+                correcionNorte2Z = 0f;
+                pintarNorte2 = true;
+                profNorte2 = 0.35f;
+                rotExtraNorte2 = new Vector3(270, 0, 0);
+                colorNorte2 = new Color(0.45f, 0.28f, 0.15f);
 
                 // Lámparas de luz
                 prefabParaSur = surDormitorio;
@@ -237,11 +259,20 @@ public class RoomSizeController : MonoBehaviour
 
             case TipoHabitacion.Cocina:
                 // Armarios colgantes
-                prefabParaNorte = norteCocina;
-                pintarNorte = true;
-                profNorte = 0.35f;
-                rotExtraNorte = Vector3.zero;
-                colorNorte = new Color(0.96f, 0.97f, 1.00f);
+                prefabParaNorte1 = norte1Cocina;
+                pintarNorte1 = true;
+                profNorte1 = 0.35f;
+                rotExtraNorte1 = Vector3.zero;
+                colorNorte1 = new Color(0.96f, 0.97f, 1.00f);
+
+                // Fogones
+                prefabParaNorte2 = norte2Cocina;
+                correcionNorte2Y = 0.34f;
+                correcionNorte2Z = -0.4f;
+                pintarNorte2 = true;
+                profNorte2 = 0.35f;
+                rotExtraNorte2 = Vector3.zero;
+                colorNorte2 = new Color(0.96f, 0.97f, 1.00f);
 
                 // Reloj de pared
                 prefabParaSur = surCocina;
@@ -253,11 +284,20 @@ public class RoomSizeController : MonoBehaviour
 
             case TipoHabitacion.Salon:
                 // Estantes flotantes con libros
-                prefabParaNorte = norteSalon;
-                pintarNorte = true;
-                profNorte = 0.15f;
-                rotExtraNorte = Vector3.zero;
-                colorNorte = new Color(0.2f, 0.2f, 0.2f);
+                prefabParaNorte1 = norte1Salon;
+                pintarNorte1 = true;
+                profNorte1 = 0.15f;
+                rotExtraNorte1 = Vector3.zero;
+                colorNorte1 = new Color(0.2f, 0.2f, 0.2f);
+
+                // Mesa del televisor
+                prefabParaNorte2 = norte2Salon;
+                correcionNorte2Y = -0.35f;
+                correcionNorte2Z = 0f;
+                pintarNorte2 = true;
+                profNorte2 = 0.85f;
+                rotExtraNorte2 = new Vector3(270, 0, 0);
+                colorNorte2 = new Color(0.2f, 0.2f, 0.2f);
 
                 // Minicuadro
                 prefabParaSur = surSalon;
@@ -274,11 +314,13 @@ public class RoomSizeController : MonoBehaviour
         contenedor.transform.localRotation = Quaternion.identity;
 
         float alturaEstanteria = 1.7f;
+        float alturaMesilla = 0.35f;
+        float alturaLamparas = 2f;
 
-        // --- PARED NORTE: 3 consecutivos, 2 huecos ---
-        if (prefabParaNorte != null)
+        // --- PARED NORTE 1: 3 consecutivos, 2 huecos ---
+        if (prefabParaNorte1 != null)
         {
-            float offsetZ_Norte = (length / 2f) - THICKNESS - (profNorte / 2f);
+            float offsetZ_Norte = (length / 2f) - THICKNESS - (profNorte1 / 2f);
             for (int x = 0; x < Mathf.FloorToInt(width); x++)
             {
                 if (x % 5 < 3 && x < width - 0.5f)
@@ -287,9 +329,28 @@ public class RoomSizeController : MonoBehaviour
                     Vector3 pos = new Vector3(posX, alturaEstanteria, offsetZ_Norte);
 
                     Quaternion rotacionPared = Quaternion.Euler(0, 180, 0);
-                    Quaternion rotacionFinal = rotacionPared * Quaternion.Euler(rotExtraNorte);
+                    Quaternion rotacionFinal = rotacionPared * Quaternion.Euler(rotExtraNorte1);
 
-                    InstanciarAsset(prefabParaNorte, pos, rotacionFinal, contenedor.transform, colorNorte, pintarNorte);
+                    InstanciarAsset(prefabParaNorte1, pos, rotacionFinal, contenedor.transform, colorNorte1, pintarNorte1);
+                }
+            }
+        }
+
+        // --- PARED NORTE 2: 1 cada 4 ---
+        if (prefabParaNorte2 != null)
+        {
+            float offsetZ_Norte = (length / 2f) - THICKNESS - (profNorte2 / 2f) + correcionNorte2Z;
+            for (int x = 0; x < Mathf.FloorToInt(width); x++)
+            {
+                if ((x - 1) % 5 == 0 && x < width - 0.5f)
+                {
+                    float posX = -width / 2f + x + 0.5f;
+                    Vector3 pos = new Vector3(posX, alturaMesilla + correcionNorte2Y, offsetZ_Norte);
+
+                    Quaternion rotacionPared = Quaternion.Euler(0, 180, 0);
+                    Quaternion rotacionFinal = rotacionPared * Quaternion.Euler(rotExtraNorte2);
+
+                    InstanciarAsset(prefabParaNorte2, pos, rotacionFinal, contenedor.transform, colorNorte2, pintarNorte2);
                 }
             }
         }
@@ -303,7 +364,7 @@ public class RoomSizeController : MonoBehaviour
                 if ((x - 1) % 4 == 0 && x < width - 0.5f)
                 {
                     float posX = -width / 2f + x + 0.5f;
-                    Vector3 pos = new Vector3(posX, alturaEstanteria, offsetZ_Sur);
+                    Vector3 pos = new Vector3(posX, alturaLamparas, offsetZ_Sur);
 
                     Quaternion rotacionPared = Quaternion.identity;
                     Quaternion rotacionFinal = rotacionPared * Quaternion.Euler(rotExtraSur);
@@ -312,8 +373,6 @@ public class RoomSizeController : MonoBehaviour
                 }
             }
         }
-
-        // --- PARED SUR ---
 
 
         // --- PARED ESTE ---
