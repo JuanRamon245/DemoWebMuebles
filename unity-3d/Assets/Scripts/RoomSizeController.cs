@@ -42,6 +42,16 @@ public class RoomSizeController : MonoBehaviour
     public GameObject surCocina;
     public GameObject surSalon;
 
+    [Header("Prefabs Pared Oeste (1 cada 5, inicio en casilla 2)")]
+    public GameObject oesteDormitorio;
+    public GameObject oesteCocina;
+    public GameObject oesteSalon;
+
+    [Header("Prefabs Pared Este (1 cada 4, inicio en casilla 2)")]
+    public GameObject esteDormitorio;
+    public GameObject esteCocina;
+    public GameObject esteSalon;
+
     private MeshRenderer mrFloor, mrNorth, mrSouth, mrEast, mrWest;
     private Texture2D cuadrculaProcedural;
 
@@ -229,6 +239,20 @@ public class RoomSizeController : MonoBehaviour
         Vector3 rotExtraSur = Vector3.zero;
         Color colorSur = Color.white;
 
+        GameObject prefabParaOeste = null;
+        bool pintarOeste = false;
+        float profOeste = 0.3f;
+        float correcionOesteX = 0.33f;
+        float correcionOesteZ = -0.5f;
+        Vector3 rotExtraOeste = Vector3.zero;
+        Color colorOeste = Color.white;
+
+        GameObject prefabParaEste = null;
+        bool pintarEste = false;
+        float profEste = 0.3f;
+        Vector3 rotExtraEste = Vector3.zero;
+        Color colorEste = Color.white;
+
         // 2. CONFIGURACIÓN EN DETALLE DENTRO DEL SWITCH
         switch (habitacionActual)
         {
@@ -255,6 +279,22 @@ public class RoomSizeController : MonoBehaviour
                 profSur = -0.1f;
                 rotExtraSur = new Vector3(270, 0, 0);
                 colorSur = new Color(0.96f, 0.96f, 0.96f);
+
+                // Espejo
+                prefabParaOeste = oesteDormitorio;
+                pintarOeste = true;
+                profOeste = 0.35f;
+                correcionOesteX = 0f;
+                correcionOesteZ = 0f;
+                rotExtraOeste = new Vector3(270, 0, 0);
+                colorOeste = new Color(0.66f, 0.97f, 1.00f);
+
+                // Poster
+                prefabParaEste = esteDormitorio;
+                pintarEste = false;
+                profEste = 0f;
+                rotExtraEste = new Vector3(180, 180, 180);
+                colorEste = new Color(0.66f, 0.97f, 1.00f);
                 break;
 
             case TipoHabitacion.Cocina:
@@ -263,12 +303,12 @@ public class RoomSizeController : MonoBehaviour
                 pintarNorte1 = true;
                 profNorte1 = 0.35f;
                 rotExtraNorte1 = Vector3.zero;
-                colorNorte1 = new Color(0.96f, 0.97f, 1.00f);
+                colorNorte1 = new Color(0.86f, 0.9f, 1.00f);
 
                 // Fogones
                 prefabParaNorte2 = norte2Cocina;
                 correcionNorte2Y = 0.34f;
-                correcionNorte2Z = -0.4f;
+                correcionNorte2Z = -0.65f;
                 pintarNorte2 = true;
                 profNorte2 = 0.35f;
                 rotExtraNorte2 = Vector3.zero;
@@ -280,6 +320,20 @@ public class RoomSizeController : MonoBehaviour
                 profSur = -0.1f;
                 rotExtraSur = new Vector3(90, 0, 0);
                 colorSur = new Color(0.3f, 0.3f, 0.32f);
+
+                // Frigorifico
+                prefabParaOeste = oesteCocina;
+                pintarOeste = true;
+                profOeste = 0.35f;
+                rotExtraOeste = new Vector3(0, 270, 0);
+                colorOeste = new Color(0.79f, 0.97f, 1.00f);
+
+                // Utensilios de cocina
+                prefabParaEste = esteCocina;
+                pintarEste = false;
+                profEste = -0.06f;
+                rotExtraEste = new Vector3(0, 90, 0);
+                colorEste = new Color(0.66f, 0.97f, 1.00f);
                 break;
 
             case TipoHabitacion.Salon:
@@ -305,6 +359,22 @@ public class RoomSizeController : MonoBehaviour
                 profSur = -0.1f;
                 rotExtraSur = Vector3.zero;
                 colorSur = new Color(0.7f, 0.4f, 0.2f);
+
+                // Chimenea
+                prefabParaOeste = oesteSalon;
+                pintarOeste = true;
+                profOeste = 0.25f;
+                correcionOesteX = 0f;
+                correcionOesteZ = 0f;
+                rotExtraOeste = new Vector3(0, 0, 0);
+                colorOeste = new Color(0.66f, 0.67f, 0.70f);
+
+                // Cuadro grande
+                prefabParaEste = esteSalon;
+                pintarEste = false;
+                profEste = -0.1f;
+                rotExtraEste = new Vector3(180, 180, 180);
+                colorEste = new Color(0.66f, 0.97f, 1.00f);
                 break;
         }
 
@@ -315,7 +385,9 @@ public class RoomSizeController : MonoBehaviour
 
         float alturaEstanteria = 1.7f;
         float alturaMesilla = 0.35f;
-        float alturaLamparas = 2f;
+        float alturaLamparas = 1.5f;
+        float alturaEspejo = 0f;
+        float alturaPoster = 1f;
 
         // --- PARED NORTE 1: 3 consecutivos, 2 huecos ---
         if (prefabParaNorte1 != null)
@@ -376,10 +448,45 @@ public class RoomSizeController : MonoBehaviour
 
 
         // --- PARED ESTE ---
+        if (prefabParaEste != null)
+        {
+            float offsetX_Este = (width / 2f) - THICKNESS - (profEste / 2f);
+
+            for (int z = 0; z < Mathf.FloorToInt(length); z++)
+            {
+                if ((z - 0) % 4 == 0 && z < length - 0.5f)
+                {
+                    float posZ = -length / 2f + z + 0.5f;
+                    Vector3 pos = new Vector3(offsetX_Este, alturaPoster, posZ);
+
+                    Quaternion rotacionPared = Quaternion.Euler(0, -90, 0);
+                    Quaternion rotacionFinal = rotacionPared * Quaternion.Euler(rotExtraEste);
+
+                    InstanciarAsset(prefabParaEste, pos, rotacionFinal, contenedor.transform, colorEste, pintarEste);
+                }
+            }
+        }
 
 
         // --- PARED OESTE ---
+        if (prefabParaOeste != null)
+        {
+            float offsetX_Oeste = (-width / 2f) + THICKNESS + (profOeste / 2f) + correcionOesteX;
 
+            for (int z = 0; z < Mathf.FloorToInt(length); z++)
+            {
+                if ((z - 1) % 5 == 0 && z < length - 0.5f)
+                {
+                    float posZ = -length / 2f + z + 0.5f + correcionOesteZ;
+                    Vector3 pos = new Vector3(offsetX_Oeste, alturaEspejo, posZ);
+
+                    Quaternion rotacionPared = Quaternion.identity;
+                    Quaternion rotacionFinal = rotacionPared * Quaternion.Euler(rotExtraOeste);
+
+                    InstanciarAsset(prefabParaOeste, pos, rotacionFinal, contenedor.transform, colorOeste, pintarOeste);
+                }
+            }
+        }
 
     }
 
