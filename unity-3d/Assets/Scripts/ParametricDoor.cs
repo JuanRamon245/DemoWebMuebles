@@ -15,10 +15,6 @@ public class ParametricDoor : MonoBehaviour
     public TipoPomo pomoActual = TipoPomo.Manillar;
     public bool conCerradura = false;
 
-    [Header("Ajuste de Texturas")]
-    [Tooltip("Regula el tamaño de la textura. Valores más altos repiten más la textura (ideal si se ve borrosa).")]
-    [Range(0.1f, 10f)] public float escalaTextura = 1.0f;
-
     [Header("Materiales (Asignar en Inspector)")]
     public Material matMadera1;
     public Material matMadera2;
@@ -41,18 +37,16 @@ public class ParametricDoor : MonoBehaviour
     [Tooltip("Debe ser un Cube: representa la placa de la cerradura")]
     public GameObject visualCerradura;
 
-    private const float ANCHO_PERFIL_MARCO = 0.06f; // Lo ancho que es el listón del marco
-    private const float GROSOR_HOJA = 0.04f;        // 4 cm de grosor de puerta estándar
-
-    // --- Dimensiones reales de la herrajería (en metros) ---
-    private const float MANILLAR_LARGO = 0.14f;   // longitud de la barra
-    private const float MANILLAR_ALTO = 0.025f;   // grosor de la barra
+    private const float ANCHO_PERFIL_MARCO = 0.06f;
+    private const float GROSOR_HOJA = 0.04f;
+    private const float MANILLAR_LARGO = 0.14f;
+    private const float MANILLAR_ALTO = 0.025f;
     private const float MANILLAR_FONDO = 0.025f;
 
-    private const float POMO_DIAMETRO = 0.07f;    // diámetro del pomo
-    private const float POMO_SALIENTE = 0.035f;   // cuánto sobresale de la hoja
+    private const float POMO_DIAMETRO = 0.07f;
+    private const float POMO_SALIENTE = 0.035f;
 
-    private const float CERRADURA_LADO = 0.06f;   // placa cuadrada
+    private const float CERRADURA_LADO = 0.06f;
     private const float CERRADURA_FONDO = 0.015f;
 
     void OnValidate()
@@ -90,16 +84,14 @@ public class ParametricDoor : MonoBehaviour
         float anchoHojaReal = anchoPuerta - (ANCHO_PERFIL_MARCO * 2f);
         float altoHojaReal = altoPuerta - ANCHO_PERFIL_MARCO;
 
-        // Colocar el pivote en la bisagra (borde interior izquierdo)
         pivoteHoja.localPosition = new Vector3(-anchoPuerta / 2f + ANCHO_PERFIL_MARCO, 0, 0);
 
-        // La malla de la hoja se escala y se desplaza el doble de su mitad
         hojaMesh.localScale = new Vector3(anchoHojaReal, altoHojaReal, GROSOR_HOJA);
         hojaMesh.localPosition = new Vector3(anchoHojaReal / 2f, altoHojaReal / 2f, 0);
 
         // 3. POSICIONAR Y DAR FORMA A LOS HERRAJES (pomo/manillar/cerradura)
-        float alturaAccesorios = 1.0f; // Altura estándar de una manilla (1 metro del suelo)
-        float distanciaAlBorde = 0.08f; // Distancia desde el borde derecho de la hoja (8 cm)
+        float alturaAccesorios = 1.0f;
+        float distanciaAlBorde = 0.08f;
         float posXAccesorios = anchoHojaReal - distanciaAlBorde;
 
         ConfigurarManillar(posXAccesorios, alturaAccesorios);
@@ -110,8 +102,7 @@ public class ParametricDoor : MonoBehaviour
         AplicarLogicaMaterialesYComponentes();
     }
 
-    // El manillar es una barra (Cube) que sale de la hoja y se prolonga hacia el
-    // centro de la puerta (eje -X), simulando la palanca de un manillar real.
+    // Logica para configurar el manillar de la puerta
     void ConfigurarManillar(float posX, float altura)
     {
         if (visualManillar == null) return;
@@ -120,24 +111,18 @@ public class ParametricDoor : MonoBehaviour
         t.localScale = new Vector3(MANILLAR_LARGO, MANILLAR_ALTO, MANILLAR_FONDO);
         t.localRotation = Quaternion.identity;
 
-        // Sobresale de la cara de la hoja (mitad grosor hoja + mitad grosor manillar)
         float saliente = GROSOR_HOJA / 2f + MANILLAR_FONDO / 2f;
-
-        // Se desplaza hacia -X para que la barra "cuelgue" hacia el centro de la puerta,
-        // en vez de quedar centrada en el punto de anclaje
         float offsetX = -MANILLAR_LARGO / 2f;
 
         t.localPosition = new Vector3(posX + offsetX, altura, saliente);
     }
 
-    // El pomo es un Cylinder. El cilindro de Unity crece por defecto en su eje Y local,
-    // así que lo rotamos 90° en X para que "crezca" hacia Z (hacia fuera de la puerta).
+    // Logica para configurar el pomo de la puerta
     void ConfigurarPomo(float posX, float altura)
     {
         if (visualPomo == null) return;
 
         Transform t = visualPomo.transform;
-        // X/Z = diámetro, Y = cuánto sobresale (tras la rotación pasa a ser el eje Z)
         t.localScale = new Vector3(POMO_DIAMETRO, POMO_SALIENTE, POMO_DIAMETRO);
         t.localRotation = Quaternion.Euler(90f, 0f, 0f);
 
@@ -145,7 +130,7 @@ public class ParametricDoor : MonoBehaviour
         t.localPosition = new Vector3(posX, altura, saliente);
     }
 
-    // La cerradura es una placa cuadrada plana, colocada 15 cm por debajo del pomo/manillar
+    // Logica para configurar la cerradura de la puerta
     void ConfigurarCerradura(float posX, float altura)
     {
         if (visualCerradura == null) return;
@@ -160,7 +145,6 @@ public class ParametricDoor : MonoBehaviour
 
     void AplicarLogicaMaterialesYComponentes()
     {
-        // Determinar material de la puerta
         Material matAsignar = matMadera2;
         bool esPlastico = false;
         bool esMaderaClara = false;
@@ -202,6 +186,7 @@ public class ParametricDoor : MonoBehaviour
 #endif
     }
 
+    // Logica para configurar que opciones de la puerta están activos
     void SetRenderersActivos(GameObject obj, bool activo)
     {
         if (obj == null) return;
@@ -213,6 +198,7 @@ public class ParametricDoor : MonoBehaviour
         }
     }
 
+    // Logica para configurar el material y tamaño de la puerta
     void ConfigurarSuperficiePuerta(Transform obj, Material mat, float scaleX, float scaleY)
     {
         if (obj == null || mat == null) return;
@@ -225,8 +211,8 @@ public class ParametricDoor : MonoBehaviour
         MaterialPropertyBlock block = new MaterialPropertyBlock();
         renderer.GetPropertyBlock(block);
 
-        float finalScaleX = scaleX * escalaTextura;
-        float finalScaleY = scaleY * escalaTextura;
+        float finalScaleX = scaleX * 1.0f;
+        float finalScaleY = scaleY * 1.0f;
 
         Vector4 tilingOffset = new Vector4(finalScaleX, finalScaleY, 0, 0);
 
@@ -236,6 +222,7 @@ public class ParametricDoor : MonoBehaviour
         renderer.SetPropertyBlock(block);
     }
 
+    // Logica para configurar el material de las opciones de la puerta
     void AsignarMaterialAMatriz(GameObject parent, Material mat)
     {
         if (parent == null || mat == null) return;

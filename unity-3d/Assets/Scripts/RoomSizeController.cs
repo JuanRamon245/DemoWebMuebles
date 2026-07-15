@@ -52,6 +52,19 @@ public class RoomSizeController : MonoBehaviour
     public GameObject esteCocina;
     public GameObject esteSalon;
 
+    [Header("Referencias de Puerta Dinámica")]
+    public ParametricDoor scriptPuerta; // Arrastra aquí tu prefab/objeto de la puerta
+
+    [Header("Componentes de la Pared Sur Segmentada")]
+    // Reemplazamos el "wallSouth" único por estos tres hijos en el Inspector
+    public Transform wallSouthLeft;
+    public Transform wallSouthRight;
+    public Transform wallSouthTop;
+
+    [Header("Posición de la Puerta")]
+    [Tooltip("Posición de la puerta de izquierda a derecha (-1 extremo izquierdo, 1 extremo derecho)")]
+    [Range(-0.8f, 0.8f)] public float posicionPuertaX = 0f;
+
     private MeshRenderer mrFloor, mrNorth, mrSouth, mrEast, mrWest;
     private Texture2D cuadrculaProcedural;
 
@@ -551,9 +564,29 @@ public class RoomSizeController : MonoBehaviour
 
         Vector3 localCamPos = transform.InverseTransformPoint(Camera.main.transform.position);
 
-        if (mrNorth != null) mrNorth.enabled = (localCamPos.z < (length / 2) - 0.1f);
-        if (mrSouth != null) mrSouth.enabled = (localCamPos.z > -(length / 2) + 0.1f);
-        if (mrEast != null) mrEast.enabled = (localCamPos.x < (width / 2) - 0.1f);
-        if (mrWest != null) mrWest.enabled = (localCamPos.x > -(width / 2) + 0.1f);
+        // 1. Calculamos qué paredes deben verse
+        bool mostrarNorte = (localCamPos.z < (length / 2) - 0.1f);
+        bool mostrarSur = (localCamPos.z > -(length / 2) + 0.1f);
+        bool mostrarEste = (localCamPos.x < (width / 2) - 0.1f);
+        bool mostrarOeste = (localCamPos.x > -(width / 2) + 0.1f);
+
+        // 2. Apagamos/Encendemos el MeshRenderer (Lo visual)
+        if (mrNorth != null) mrNorth.enabled = mostrarNorte;
+        if (mrSouth != null) mrSouth.enabled = mostrarSur;
+        if (mrEast != null) mrEast.enabled = mostrarEste;
+        if (mrWest != null) mrWest.enabled = mostrarOeste;
+
+        // 3. Apagamos/Encendemos el BoxCollider (Las físicas) para que dejen pasar el ratón
+        if (wallNorth != null && wallNorth.GetComponent<BoxCollider>() != null)
+            wallNorth.GetComponent<BoxCollider>().enabled = mostrarNorte;
+
+        if (wallSouth != null && wallSouth.GetComponent<BoxCollider>() != null)
+            wallSouth.GetComponent<BoxCollider>().enabled = mostrarSur;
+
+        if (wallEast != null && wallEast.GetComponent<BoxCollider>() != null)
+            wallEast.GetComponent<BoxCollider>().enabled = mostrarEste;
+
+        if (wallWest != null && wallWest.GetComponent<BoxCollider>() != null)
+            wallWest.GetComponent<BoxCollider>().enabled = mostrarOeste;
     }
 }
