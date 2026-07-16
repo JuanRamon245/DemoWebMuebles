@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(BoxCollider))]
 public class ParametricDoor : MonoBehaviour
 {
     public enum TipoMaterial { Madera1, Madera2, Madera3, PlasticoGris }
@@ -48,6 +49,8 @@ public class ParametricDoor : MonoBehaviour
 
     private const float CERRADURA_LADO = 0.06f;
     private const float CERRADURA_FONDO = 0.015f;
+
+    private BoxCollider boxCollider;
 
     void OnValidate()
     {
@@ -98,8 +101,26 @@ public class ParametricDoor : MonoBehaviour
         ConfigurarPomo(posXAccesorios, alturaAccesorios);
         ConfigurarCerradura(posXAccesorios, alturaAccesorios);
 
-        // 4. APLICAR MATERIALES
+        // 4. ACTUALIZAR EL BOX COLLIDER DINÁMICAMENTE (igual que ParametricWindow)
+        ActualizarCollider();
+
+        // 5. APLICAR MATERIALES
         AplicarLogicaMaterialesYComponentes();
+    }
+
+
+    void ActualizarCollider()
+    {
+        if (boxCollider == null)
+        {
+            boxCollider = GetComponent<BoxCollider>();
+        }
+
+        if (boxCollider != null)
+        {
+            boxCollider.size = new Vector3(anchoPuerta, altoPuerta, grosorMarco);
+            boxCollider.center = new Vector3(0f, altoPuerta / 2f, 0f);
+        }
     }
 
     // Logica para configurar el manillar de la puerta
@@ -191,7 +212,6 @@ public class ParametricDoor : MonoBehaviour
     {
         if (obj == null) return;
 
-        // El parámetro 'true' asegura encontrar renderers incluso si se desactivaron previamente
         foreach (var r in obj.GetComponentsInChildren<MeshRenderer>(true))
         {
             r.enabled = activo;
@@ -207,6 +227,7 @@ public class ParametricDoor : MonoBehaviour
         if (renderer == null) return;
 
         renderer.sharedMaterial = mat;
+        mat.EnableKeyword("_EMISSION");
 
         MaterialPropertyBlock block = new MaterialPropertyBlock();
         renderer.GetPropertyBlock(block);
@@ -226,6 +247,8 @@ public class ParametricDoor : MonoBehaviour
     void AsignarMaterialAMatriz(GameObject parent, Material mat)
     {
         if (parent == null || mat == null) return;
+
+        mat.EnableKeyword("_EMISSION");
 
         foreach (var r in parent.GetComponentsInChildren<MeshRenderer>(true))
         {

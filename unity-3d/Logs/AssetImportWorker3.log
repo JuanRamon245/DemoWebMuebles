@@ -1,11 +1,11 @@
 [Licensing::Module] Trying to connect to existing licensing client channel...
 Built from '6000.3/staging' branch; Version is '6000.3.19f1 (7689f4515d75) revision 7768564'; Using compiler version '194234433'; Build Type 'Release'
 OS: 'Windows 11  (10.0.26200) Professional' Language: 'es' Physical Memory: 16106 MB
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-polli" at "2026-07-16T11:04:53.1964565Z"
 BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-polli" at "2026-07-16T11:39:49.3995619Z"
 System  architecture: x64
 Process architecture: x64
-Date: 2026-07-16T11:04:53Z
+Date: 2026-07-16T11:39:49Z
 
 COMMAND LINE ARGUMENTS:
 C:\Program Files\Unity\Hub\Editor\6000.3.19f1\Editor\Unity.exe
@@ -13,11 +13,11 @@ C:\Program Files\Unity\Hub\Editor\6000.3.19f1\Editor\Unity.exe
 -batchMode
 -noUpm
 -name
-AssetImportWorker1
+AssetImportWorker3
 -projectPath
 C:/Users/polli/Desktop/DemoWebMuebles/unity-3d
 -logFile
-Logs/AssetImportWorker1.log
+Logs/AssetImportWorker3.log
 -srvPort
 55558
 -parentPid
@@ -75,14 +75,14 @@ C:/Users/polli/Desktop/DemoWebMuebles/unity-3d
     "memorysetup-job-temp-allocator-block-size-background=1048576"
     "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
     "memorysetup-temp-allocator-size-cloud-worker=32768"
-Player connection [6420]  Target information:
+Player connection [14752]  Target information:
 
-Player connection [6420]  * "[IP] 192.168.1.15 [Port] 0 [Flags] 2 [Guid] 3722707044 [EditorId] 3722707044 [Version] 1048832 [Id] WindowsEditor(7,Juan) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+Player connection [14752]  * "[IP] 192.168.1.15 [Port] 0 [Flags] 2 [Guid] 2895457498 [EditorId] 2895457498 [Version] 1048832 [Id] WindowsEditor(7,Juan) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
 
-Player connection [6420]  * "[IP] 26.47.51.137 [Port] 0 [Flags] 2 [Guid] 3722707044 [EditorId] 3722707044 [Version] 1048832 [Id] WindowsEditor(7,Juan) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+Player connection [14752]  * "[IP] 26.47.51.137 [Port] 0 [Flags] 2 [Guid] 2895457498 [EditorId] 2895457498 [Version] 1048832 [Id] WindowsEditor(7,Juan) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
 
-Player connection [6420] Host joined multi-casting on [225.0.0.222:54997]...
-Player connection [6420] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Player connection [14752] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [14752] Host joined alternative multi-casting on [225.0.0.222:34997]...
 JobSystem: Creating JobQueue using job-worker-count value 5
 Input System module state changed to: Initialized.
 [Physics::Module] Initialized fallback backend.
@@ -94,7 +94,7 @@ Library Redirect Path: Library/
 [Physics::Module] SDK Version: 4.1.2
 [Physics::Module] Integration Version: 1.0.0
 [Physics::Module] Threading Mode: Multi-Threaded
-Refreshing native plugins compatible for Editor in 6.34 ms, found 4 plugins.
+Refreshing native plugins compatible for Editor in 27.00 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Initialize engine version: 6000.3.19f1 (7689f4515d75)
 [Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.3.19f1/Editor/Data/Resources/UnitySubsystems
@@ -112,30 +112,30 @@ Initialize mono
 Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.3.19f1/Editor/Data/Managed'
 Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.3.19f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
 Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.3.19f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56916
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56868
 [Licensing::Client] Error: HandshakeResponse reported an error:
 	ResponseCode: 505
 	ResponseStatus: Unsupported protocol version '1.18.1'.
 [Licensing::Module] Error: Failed to handshake to channel: "LicenseClient-polli"
 [Licensing::IpcConnector] LicenseClient-polli channel disconnected successfully.
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-polli-6000.3.19" at "2026-07-16T11:04:56.3886916Z"
-Begin MonoManager ReloadAssembly
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-polli-6000.3.19" at "2026-07-16T11:39:53.9509042Z"
 [Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 23916, path: "C:/Program Files/Unity/Hub/Editor/6000.3.19f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
 [Licensing::Module] LicensingClient has failed validation; ignoring
+Begin MonoManager ReloadAssembly
 [Licensing::Client] Handshaking with LicensingClient:
   Version:                 1.18.1+9fbee8e
-  Session Id:              e119f28625a94e1297e7675f11fc48d6
+  Session Id:              d7f9275b87184fc0b05e45b94be340f2
   Correlation Id:          ce8eebfebee3fd36930cec7e5ce6bdba
-  External correlation Id: 4302173424114130105
+  External correlation Id: 8509373037993761520
   Machine Id:              2G4c3GEPAieHquFmDVNxahtqsgI=
-[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-polli-6000.3.19" (connect: 0.00s, validation: 0.01s, handshake: 0.03s)
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-polli-6000.3.19-notifications" at "2026-07-16T11:04:56.425247Z"
-[Licensing::Module] Licensing Background thread has ended after 3.23s
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-polli-6000.3.19" (connect: 0.00s, validation: 0.02s, handshake: 0.04s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-polli-6000.3.19-notifications" at "2026-07-16T11:39:54.0157619Z"
+[Licensing::Module] Licensing Background thread has ended after 4.62s
 Registering precompiled unity dll's ...
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.19f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.19f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
-Registered in 0.012821 seconds.
-- Loaded All Assemblies, in  1.038 seconds
+Registered in 0.012335 seconds.
+- Loaded All Assemblies, in  1.387 seconds
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
 Package Manager log level set to [2]
@@ -144,37 +144,37 @@ Package Manager log level set to [2]
 [Package Manager] Cannot connect to Unity Package Manager local server
 ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  0.739 seconds
-Domain Reload Profiling: 1767ms
-	BeginReloadAssembly (334ms)
+- Finished resetting the current domain, in  6.456 seconds
+Domain Reload Profiling: 7845ms
+	BeginReloadAssembly (309ms)
 		ExecutionOrderSort (0ms)
 		DisableScriptedObjects (0ms)
 		BackupInstance (0ms)
-		ReleaseScriptingObjects (1ms)
+		ReleaseScriptingObjects (0ms)
 		CreateAndSetChildDomain (4ms)
-	RebuildCommonClasses (99ms)
-	RebuildNativeTypeToScriptingClass (26ms)
-	initialDomainReloadingComplete (130ms)
-	LoadAllAssembliesAndSetupDomain (438ms)
-		LoadAssemblies (309ms)
+	RebuildCommonClasses (120ms)
+	RebuildNativeTypeToScriptingClass (43ms)
+	initialDomainReloadingComplete (199ms)
+	LoadAllAssembliesAndSetupDomain (708ms)
+		LoadAssemblies (268ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (422ms)
-			TypeCache.Refresh (419ms)
-				TypeCache.ScanAssembly (380ms)
+		AnalyzeDomain (697ms)
+			TypeCache.Refresh (693ms)
+				TypeCache.ScanAssembly (628ms)
 			BuildScriptInfoCaches (0ms)
-			ResolveRequiredComponents (1ms)
-	FinalizeReload (740ms)
+			ResolveRequiredComponents (2ms)
+	FinalizeReload (6467ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (668ms)
+		SetupLoadedEditorAssemblies (5752ms)
 			LogAssemblyErrors (0ms)
-			InitializePlatformSupportModulesInManaged (104ms)
-			SetLoadedEditorAssemblies (10ms)
-			BeforeProcessingInitializeOnLoad (153ms)
-			ProcessInitializeOnLoadAttributes (259ms)
-			ProcessInitializeOnLoadMethodAttributes (143ms)
-			AfterProcessingInitializeOnLoad (0ms)
-			EditorAssembliesLoaded (0ms)
+			InitializePlatformSupportModulesInManaged (2169ms)
+			SetLoadedEditorAssemblies (53ms)
+			BeforeProcessingInitializeOnLoad (362ms)
+			ProcessInitializeOnLoadAttributes (2211ms)
+			ProcessInitializeOnLoadMethodAttributes (955ms)
+			AfterProcessingInitializeOnLoad (1ms)
+			EditorAssembliesLoaded (1ms)
 		ExecutionOrderSort2 (0ms)
 		AwakeInstancesAfterBackupRestoration (0ms)
 [Licensing::Client] Successfully resolved entitlement details
@@ -186,80 +186,137 @@ Domain Reload Profiling: 1767ms
 ========================================================================
 Worker process is ready to serve import requests
 Import Worker Mode flag is 0x00
-Curl error 3: URL rejected: Malformed input to a URL function
 Begin MonoManager ReloadAssembly
-- Loaded All Assemblies, in  1.277 seconds
-Refreshing native plugins compatible for Editor in 5.78 ms, found 4 plugins.
+- Loaded All Assemblies, in  6.263 seconds
+Refreshing native plugins compatible for Editor in 10.86 ms, found 4 plugins.
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
 [Package Manager] Failed to launch server process. Reason: Unity was launched with the -noUpm command-line argument
 [Package Manager] Unable to send message (not connected to server process).
 [Package Manager] Cannot connect to Unity Package Manager local server
-Refreshing native plugins compatible for Editor in 3.48 ms, found 4 plugins.
+Refreshing native plugins compatible for Editor in 3.72 ms, found 4 plugins.
 [Package Manager] Failed to launch server process. Reason: Unity was launched with the -noUpm command-line argument
 [Package Manager] Unable to send message (not connected to server process).
 [Package Manager] Cannot connect to Unity Package Manager local server
 ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  1.333 seconds
-Domain Reload Profiling: 2602ms
-	BeginReloadAssembly (218ms)
+- Finished resetting the current domain, in  2.203 seconds
+Domain Reload Profiling: 8561ms
+	BeginReloadAssembly (487ms)
 		ExecutionOrderSort (0ms)
-		DisableScriptedObjects (6ms)
+		DisableScriptedObjects (12ms)
 		BackupInstance (0ms)
 		ReleaseScriptingObjects (0ms)
-		CreateAndSetChildDomain (44ms)
-	RebuildCommonClasses (49ms)
-	RebuildNativeTypeToScriptingClass (16ms)
-	initialDomainReloadingComplete (54ms)
-	LoadAllAssembliesAndSetupDomain (932ms)
-		LoadAssemblies (675ms)
+		CreateAndSetChildDomain (75ms)
+	RebuildCommonClasses (78ms)
+	RebuildNativeTypeToScriptingClass (22ms)
+	initialDomainReloadingComplete (88ms)
+	LoadAllAssembliesAndSetupDomain (5683ms)
+		LoadAssemblies (2107ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (367ms)
-			TypeCache.Refresh (253ms)
-				TypeCache.ScanAssembly (227ms)
-			BuildScriptInfoCaches (90ms)
-			ResolveRequiredComponents (17ms)
-	FinalizeReload (1334ms)
+		AnalyzeDomain (3773ms)
+			TypeCache.Refresh (2034ms)
+				TypeCache.ScanAssembly (1988ms)
+			BuildScriptInfoCaches (300ms)
+			ResolveRequiredComponents (242ms)
+	FinalizeReload (2204ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (1014ms)
+		SetupLoadedEditorAssemblies (1480ms)
 			LogAssemblyErrors (0ms)
-			InitializePlatformSupportModulesInManaged (3ms)
-			SetLoadedEditorAssemblies (5ms)
-			BeforeProcessingInitializeOnLoad (224ms)
-			ProcessInitializeOnLoadAttributes (651ms)
-			ProcessInitializeOnLoadMethodAttributes (120ms)
-			AfterProcessingInitializeOnLoad (10ms)
+			InitializePlatformSupportModulesInManaged (6ms)
+			SetLoadedEditorAssemblies (9ms)
+			BeforeProcessingInitializeOnLoad (406ms)
+			ProcessInitializeOnLoadAttributes (891ms)
+			ProcessInitializeOnLoadMethodAttributes (149ms)
+			AfterProcessingInitializeOnLoad (19ms)
 			EditorAssembliesLoaded (1ms)
 		ExecutionOrderSort2 (0ms)
-		AwakeInstancesAfterBackupRestoration (14ms)
-Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
-Refreshing native plugins compatible for Editor in 2.56 ms, found 4 plugins.
+		AwakeInstancesAfterBackupRestoration (12ms)
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.05 seconds
+Refreshing native plugins compatible for Editor in 97.71 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Unloading 16 Unused Serialized files (Serialized files now loaded: 0)
 Curl error 3: URL rejected: Malformed input to a URL function
-Unloading 6477 unused Assets / (4.4 MB). Loaded Objects now: 7308.
-Memory consumption went from 176.6 MB to 172.2 MB.
-Total: 17.036600 ms (FindLiveObjects: 2.145500 ms CreateObjectMapping: 0.836200 ms MarkObjects: 8.471100 ms  DeleteObjects: 5.581400 ms)
+Unloading 6478 unused Assets / (5.2 MB). Loaded Objects now: 7309.
+Memory consumption went from 174.8 MB to 169.7 MB.
+Total: 123.419300 ms (FindLiveObjects: 18.521500 ms CreateObjectMapping: 49.166600 ms MarkObjects: 24.205300 ms  DeleteObjects: 31.522700 ms)
 
 ========================================================================
+Received Prepare
+Begin MonoManager ReloadAssembly
+- Loaded All Assemblies, in  1.814 seconds
+Refreshing native plugins compatible for Editor in 10.30 ms, found 4 plugins.
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+[Package Manager] Failed to launch server process. Reason: Unity was launched with the -noUpm command-line argument
+[Package Manager] Unable to send message (not connected to server process).
+[Package Manager] Cannot connect to Unity Package Manager local server
+[Package Manager] Failed to launch server process. Reason: Unity was launched with the -noUpm command-line argument
+[Package Manager] Unable to send message (not connected to server process).
+[Package Manager] Cannot connect to Unity Package Manager local server
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  2.519 seconds
+Domain Reload Profiling: 4334ms
+	BeginReloadAssembly (411ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (11ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (109ms)
+	RebuildCommonClasses (86ms)
+	RebuildNativeTypeToScriptingClass (22ms)
+	initialDomainReloadingComplete (65ms)
+	LoadAllAssembliesAndSetupDomain (1229ms)
+		LoadAssemblies (782ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (564ms)
+			TypeCache.Refresh (19ms)
+				TypeCache.ScanAssembly (2ms)
+			BuildScriptInfoCaches (506ms)
+			ResolveRequiredComponents (24ms)
+	FinalizeReload (2520ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (1469ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (18ms)
+			SetLoadedEditorAssemblies (28ms)
+			BeforeProcessingInitializeOnLoad (451ms)
+			ProcessInitializeOnLoadAttributes (787ms)
+			ProcessInitializeOnLoadMethodAttributes (171ms)
+			AfterProcessingInitializeOnLoad (12ms)
+			EditorAssembliesLoaded (1ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (38ms)
+Refreshing native plugins compatible for Editor in 4.49 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 16 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 6475 unused Assets / (4.7 MB). Loaded Objects now: 7325.
+Memory consumption went from 179.7 MB to 175.0 MB.
+Total: 17.845400 ms (FindLiveObjects: 2.320800 ms CreateObjectMapping: 1.721300 ms MarkObjects: 8.475700 ms  DeleteObjects: 5.325300 ms)
+
+Prepare: number of updated asset objects reloaded= 0
+========================================================================
 Received Import Request.
-  Time since last request: 579483.400801 seconds.
-  path: Assets/Scripts/ParametricWindow.cs
-  artifactKey: Guid(41ce0b47fe135fe41bfc6232f81da24c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Scripts/ParametricWindow.cs using Guid(41ce0b47fe135fe41bfc6232f81da24c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '585d28a1609c4066d747eb0ef2e381bc') in 0.1168153 seconds
+  Time since last request: 581603.948351 seconds.
+  path: Assets/Scripts/GestionarPared.cs
+  artifactKey: Guid(f8f75ecd511af0c4baf1c669673e2a07) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scripts/GestionarPared.cs using Guid(f8f75ecd511af0c4baf1c669673e2a07) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '00000000000000000000000000000000') in 0.0262011 seconds
+Import Error Code:(4)
+Message: Build asset version error: assets/scripts/gestionarpared.cs in SourceAssetDB has modification time of '2026-07-16T11:39:52.5298676Z' while content on disk has modification time of '2026-07-16T11:40:05.1517372Z'
+  ERROR: Build asset version error: assets/scripts/gestionarpared.cs in SourceAssetDB has modification time of '2026-07-16T11:39:52.5298676Z' while content on disk has modification time of '2026-07-16T11:40:05.1517372Z'
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.000042 seconds.
-  path: Assets/Scripts/MoverEnPared.cs
-  artifactKey: Guid(412826483119caf41a1a03088bd17716) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d)
-Start importing Assets/Scripts/MoverEnPared.cs using Guid(412826483119caf41a1a03088bd17716) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) (ScriptedImporter) -> (artifact id: '25f00d9db7f32c89e3aec1b4c6c5d009') in 0.0219163 seconds
+  Time since last request: 0.000035 seconds.
+  path: Assets/Scripts/GestionarPared.cs
+  artifactKey: Guid(f8f75ecd511af0c4baf1c669673e2a07) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scripts/GestionarPared.cs using Guid(f8f75ecd511af0c4baf1c669673e2a07) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '00000000000000000000000000000000') in 0.0013394 seconds
+Import Error Code:(4)
+Message: Build asset version error: assets/scripts/gestionarpared.cs in SourceAssetDB has modification time of '2026-07-16T11:39:52.5298676Z' while content on disk has modification time of '2026-07-16T11:40:05.1517372Z'
+  ERROR: Build asset version error: assets/scripts/gestionarpared.cs in SourceAssetDB has modification time of '2026-07-16T11:39:52.5298676Z' while content on disk has modification time of '2026-07-16T11:40:05.1517372Z'
 Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
 
-Editor requested this worker to shutdown with reason: Scaling down because of idle timeout
-AssetImportWorker is now disconnected from the server
-Process exiting
-Exiting without the bug reporter. Application will terminate with return code 0
