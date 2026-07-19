@@ -1,0 +1,103 @@
+<div class="catalog-container">
+    <div class="catalog-layout">
+
+        <!-- Barra Lateral de Filtros -->
+        <aside class="catalog-sidebar">
+            <div class="filter-box">
+                <h2 class="filter-title">Filtrar Productos</h2>
+
+                <div class="filter-list">
+                    <button (click)="seleccionarCategoria('todos')" [class.active]="categoriaSeleccionada === 'todos'"
+                        class="filter-btn">
+                        <span>Todos los muebles</span>
+                    </button>
+
+                    <button (click)="seleccionarCategoria('puerta')" [class.active]="categoriaSeleccionada === 'puerta'"
+                        class="filter-btn">
+                        <span>Puertas</span>
+                    </button>
+
+                    <button (click)="seleccionarCategoria('ventana')"
+                        [class.active]="categoriaSeleccionada === 'ventana'" class="filter-btn">
+                        <span>Ventanas</span>
+                    </button>
+
+                    <button (click)="seleccionarCategoria('estanteria')"
+                        [class.active]="categoriaSeleccionada === 'estanteria'" class="filter-btn">
+                        <span>Estanterías</span>
+                    </button>
+
+                    <button (click)="seleccionarCategoria('mesa')" [class.active]="categoriaSeleccionada === 'mesa'"
+                        class="filter-btn">
+                        <span>Mesas</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Contenido Principal -->
+        <main class="catalog-main">
+            <div class="search-wrapper">
+                <div class="search-icon-container">
+                    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.63 10.63Z" />
+                    </svg>
+                </div>
+                <input type="text" [(ngModel)]="textoBusqueda" (input)="filtrarMuebles()"
+                    placeholder="Busca armarios, puertas, ventanas, materiales..." class="search-input">
+            </div>
+
+            <!-- Estado Vacío -->
+            <div *ngIf="mueblesFiltrados.length === 0" class="empty-state">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="empty-icon">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M15.182 16.318A4.486 4.486 0 0 0 12.016 15a4.486 4.486 0 0 0-3.198 1.302m0-6.197 3.193-3.193m0 0 3.193 3.193m-3.193-3.193v10.125" />
+                </svg>
+                <p class="empty-text">No hemos encontrado ningún mueble con ese nombre.</p>
+                <button (click)="textoBusqueda = ''; filtrarMuebles()" class="btn-clear">Limpiar búsqueda</button>
+            </div>
+
+            <!-- Cuadrícula de Productos -->
+            <div class="products-grid">
+                <div *ngFor="let mueble of mueblesFiltrados" class="product-card">
+
+                    <div class="card-content">
+                        <div class="image-wrapper">
+                            <!-- Acceso directo a la primera imagen del array paramétrico -->
+                            <img [src]="mueble.imagenes[0]" [alt]="mueble.nombre" class="product-img">
+                            <span class="category-badge">{{ mueble.categoria }}</span>
+                        </div>
+
+                        <div class="info-wrapper">
+                            <h3 class="product-title">{{ mueble.nombre }}</h3>
+                            <p class="product-description">{{ mueble.descripcion }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Footer de la Tarjeta -->
+                    <div class="card-footer">
+                        <div class="price-row">
+                            <span class="price-label">Precio estimado</span>
+                            <!-- Cambio a precioBase con formateo de decimales limpio -->
+                            <span class="price-amount">{{ mueble.precioBase | number:'1.2-2' }} €</span>
+                        </div>
+
+                        <button [routerLink]="['/configurador', mueble.id]" class="btn-configure">
+                            <span>Ver más / Configurar</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                stroke="currentColor" class="btn-icon">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                            </svg>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>

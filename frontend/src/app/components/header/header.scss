@@ -1,0 +1,150 @@
+// Variables locales para mantener coherencia de colores
+$color-primary: #2563eb; // Azul corporativo
+$color-primary-hover: #3b82f6;
+$color-success: #059669; // Verde habitación
+$color-success-hover: #10b981;
+$color-badge: #f59e0b; // Ámbar notificaciones
+$border-color: #e5e7eb;
+$text-dark: #111827;
+$text-muted: #4b5563;
+
+.main-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid $border-color;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+
+    .header-container {
+        width: 80%;
+        margin: 0 auto;
+        padding: 0 1rem;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        @media (min-width: 640px) {
+            padding: 0 1.5rem;
+        }
+
+        @media (min-width: 1024px) {
+            padding: 0 2rem;
+        }
+    }
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+
+    .logo-box {
+        width: 32px;
+        height: 32px;
+        background-color: $color-primary;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-weight: bold;
+        font-size: 1.125rem;
+    }
+
+    .logo-text {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: $text-dark;
+        letter-spacing: -0.025em;
+    }
+
+    .logo-accent {
+        color: $color-primary;
+    }
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .btn-room {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background-color: $color-success;
+        color: #ffffff;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-radius: 9999px;
+        border: none;
+        font-size: 0.875rem;
+        cursor: pointer;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        transition: background-color 0.2s;
+
+        &:hover {
+            background-color: $color-success-hover;
+        }
+
+        .icon {
+            width: 20px;
+            height: 20px;
+        }
+    }
+
+    .btn-cart {
+        position: relative;
+        padding: 0.625rem;
+        color: $text-muted;
+        background: transparent;
+        border: none;
+        border-radius: 9999px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+
+        &:hover {
+            background-color: #f3f4f6;
+        }
+
+        .icon-cart {
+            width: 24px;
+            height: 24px;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background-color: $color-badge;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 0.75rem;
+            width: 20px;
+            height: 20px;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+            animation: bounce 1s infinite;
+        }
+    }
+}
+
+// Animación nativa para la burbuja del carrito
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+        animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+
+    50% {
+        transform: translateY(-25%);
+        animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+}

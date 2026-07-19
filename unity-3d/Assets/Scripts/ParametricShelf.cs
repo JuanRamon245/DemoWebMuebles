@@ -86,6 +86,92 @@ public class ParametricShelf : MonoBehaviour
         ActualizarEstanteria();
     }
 
+    public void SetAlto(float valor)
+    {
+        altoEstanteria = valor;
+        ActualizarEstanteria();
+    }
+
+    public void SetAncho(float valor)
+    {
+        anchoEstanteria = valor;
+        ActualizarEstanteria();
+    }
+
+    public void SetProfundidad(float valor)
+    {
+        profundidadEstanteria = valor;
+        ActualizarEstanteria();
+    }
+
+    public void SetTamanoBaldas(float valor)
+    {
+        grosorBaldasHorizontales = valor;
+        ActualizarEstanteria();
+    }
+
+    public void SetNumBaldas(float valor)
+    {
+        totalBaldas = Mathf.RoundToInt(valor);
+        ActualizarEstanteria();
+    }
+
+    public void SetMargenSuperior(float valor)
+    {
+        margenSuperior = valor;
+        ActualizarEstanteria();
+    }
+
+    public void SetMargenInferior(float valor)
+    {
+        margenInferior = valor;
+        ActualizarEstanteria();
+    }
+
+    public void SetMargenSimetrico(float valor)
+    {
+        margenSimetrico = valor > 0.5f;
+        ActualizarEstanteria();
+    }
+
+    public void SetMaterial(string valor)
+    {
+        switch (valor)
+        {
+            case "Abedul": materialActual = TipoMaterial.Madera1; break;
+            case "Cerezo": materialActual = TipoMaterial.Madera2; break;
+            case "Nogal": materialActual = TipoMaterial.Madera3; break;
+            default:
+                Debug.LogWarning($"Material '{valor}' sin mapeo definido en SetMaterial()");
+                break;
+        }
+        AplicarMateriales();
+    }
+
+    [System.Serializable]
+    private class ConfigEstanteriaJson
+    {
+        public float alto, ancho, profundidad, tamanoBaldas, margenSuperior, margenInferior;
+        public int numBaldas;
+        public string material;
+        public bool margenSimetrico;
+    }
+
+    public void AplicarConfiguracion(string json)
+    {
+        var cfg = JsonUtility.FromJson<ConfigEstanteriaJson>(json);
+        altoEstanteria = cfg.alto;
+        anchoEstanteria = cfg.ancho;
+        profundidadEstanteria = cfg.profundidad;
+        grosorBaldasHorizontales = cfg.tamanoBaldas;
+        totalBaldas = cfg.numBaldas;
+        margenSuperior = cfg.margenSuperior;
+        margenInferior = cfg.margenInferior;
+        margenSimetrico = cfg.margenSimetrico;
+        SetMaterial(cfg.material);
+        ActualizarEstanteria();
+    }
+
     public void ActualizarEstanteria()
     {
         if (lateralIzq == null || lateralDer == null || techo == null || suelo == null || fondo == null || contenedorBaldas == null) return;

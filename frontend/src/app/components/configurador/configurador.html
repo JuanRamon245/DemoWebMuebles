@@ -1,0 +1,186 @@
+<div class="config-container">
+    <div class="header">
+        <div class="header-inner">
+            <button routerLink="/catalogo" class="btn-back">
+                <span class="material-symbols-outlined">arrow_back</span>
+                Volver al catálogo
+            </button>
+        </div>
+    </div>
+
+    <div class="layout-split">
+        <div class="visual-col">
+            <div *ngIf="!modoAmedida" class="carousel-wrapper">
+                <div class="main-image">
+                    <img [src]="imagenActual" [alt]="producto.nombre">
+                </div>
+                <div class="thumbnail-list">
+                    <img *ngFor="let img of producto.imagenes" [src]="img" (click)="cambiarImagen(img)"
+                        [class.active]="img === imagenActual" class="thumbnail">
+                </div>
+            </div>
+
+            <div *ngIf="modoAmedida" class="unity-wrapper">
+                <div class="unity-container">
+                    <canvas #unityCanvas id="unity-canvas"></canvas>
+
+                    <div *ngIf="!unityCargado" class="unity-placeholder">
+                        <span class="material-symbols-outlined" style="font-size: 3rem;">3d_rotation</span>
+                        <span>Cargando visor 3D de {{ producto.nombre }}...</span>
+
+                        <div class="barra-progreso">
+                            <div class="barra-progreso-relleno" [style.width.%]="progresoCarga"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="camera-controls">
+                    <h4>Control de Cámara</h4>
+                    <hr class="divider-sm">
+                    <div class="control-group">
+                        <label>Eje X (Rotación Vertical)</label>
+                        <div class="input-row">
+                            <input type="range" min="0" max="90" [(ngModel)]="camara.x" (input)="alCambiarCamara()">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label>Eje Y (Rotación Horizontal)</label>
+                        <div class="input-row">
+                            <input type="range" min="-180" max="180" [(ngModel)]="camara.y" (input)="alCambiarCamara()">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label>Zoom</label>
+                        <div class="input-row">
+                            <input type="range" min="-10" max="10" [(ngModel)]="camara.z" (input)="alCambiarCamara()">
+                        </div>
+                    </div>
+                    <div class="camera-reset-row">
+                        <button class="btn-text-small" (click)="resetearCamara()">
+                            <span class="material-symbols-outlined">refresh</span> Resetear cámara
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-col">
+            <ng-container *ngIf="!modoAmedida">
+                <h1 class="product-title">{{ producto.nombre }}</h1>
+                <hr class="divider-main">
+
+                <div class="description-box">
+                    <p>{{ producto.descripcion }}</p>
+                    <ul class="attributes-list">
+                        <li *ngFor="let attr of producto.atributosPorDefecto">
+                            <strong>{{ attr.clave }}:</strong> {{ attr.valor }}
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="price-container left-aligned">
+                    <span class="price-label">Precio:</span>
+                    <span class="price-display">{{ precioTotal | number:'1.2-2' }} €</span>
+                </div>
+
+                <div class="action-row-proportional">
+                    <div class="quantity-box flex-30">
+                        <label>Cantidad</label>
+                        <div class="qty-controls">
+                            <button class="qty-btn" (click)="cantidad = cantidad > 1 ? cantidad - 1 : 1">-</button>
+                            <span class="qty-num">{{ cantidad }}</span>
+                            <button class="qty-btn" (click)="cantidad = cantidad + 1">+</button>
+                        </div>
+                    </div>
+                    <button class="btn-primary flex-70" (click)="anadirAlCarrito('predeterminado')">
+                        <span class="material-symbols-outlined">shopping_cart</span> Añadir al carrito
+                    </button>
+                </div>
+
+                <div class="notice-box minimal">
+                    <p><strong>¿Necesitas otras medidas?</strong> Abre nuestro editor tridimensional interactivo para
+                        cambiar materiales, volumetrías y equipamiento interno.</p>
+                </div>
+
+                <div class="align-right-container">
+                    <button class="btn-secondary half-width" (click)="activarModoMedida()">
+                        <span class="material-symbols-outlined">design_services</span> Hacer a medida
+                    </button>
+                </div>
+            </ng-container>
+
+            <ng-container *ngIf="modoAmedida">
+                <h1 class="product-title">Configuración Personalizada</h1>
+                <hr class="divider-main">
+
+                <div class="config-form">
+                    <ng-container *ngFor="let campo of esquemaConfig">
+
+                        <div class="form-row"
+                            *ngIf="!campo.soloSiClave || config[campo.soloSiClave] === campo.soloSiValorEsperado"
+                            [ngSwitch]="campo.tipo">
+
+                            <ng-container *ngSwitchCase="'range'">
+                                <label>{{ campo.etiqueta }} <span *ngIf="campo.unidad">({{ campo.unidad
+                                        }})</span></label>
+                                <div class="input-row">
+                                    <input type="range" [min]="campo.min" [max]="campo.max" [step]="campo.step ?? 0.01"
+                                        [ngModel]="config[campo.clave]" (ngModelChange)="config[campo.clave] = $event"
+                                        (input)="alCambiarParametro(campo.clave)">
+                                    <input type="number" [min]="campo.min ?? null" [max]="campo.max ?? null"
+                                        [step]="campo.step ?? 0.01" [ngModel]="config[campo.clave]"
+                                        (ngModelChange)="config[campo.clave] = $event"
+                                        (input)="alCambiarParametro(campo.clave)" class="num-input">
+                                </div>
+                            </ng-container>
+
+                            <!-- TIPO SELECT -->
+                            <ng-container *ngSwitchCase="'select'">
+                                <label>{{ campo.etiqueta }}</label>
+                                <select [ngModel]="config[campo.clave]" (ngModelChange)="config[campo.clave] = $event"
+                                    (change)="alCambiarParametro(campo.clave)">
+                                    <option *ngFor="let opcion of campo.opciones" [value]="opcion.value">
+                                        {{ opcion.label }} <span *ngIf="opcion.extra">{{ opcion.extra }}</span>
+                                    </option>
+                                </select>
+                            </ng-container>
+
+                            <!-- TIPO CHECKBOX -->
+                            <ng-container *ngSwitchCase="'checkbox'">
+                                <div class="checkbox-row">
+                                    <input type="checkbox" [id]="campo.clave" [ngModel]="config[campo.clave]"
+                                        (ngModelChange)="config[campo.clave] = $event"
+                                        (change)="alCambiarParametro(campo.clave)">
+                                    <label [for]="campo.clave">{{ campo.etiqueta }}</label>
+                                </div>
+                            </ng-container>
+
+                        </div>
+                    </ng-container>
+                </div>
+                <!-- >>> CAMBIO FIN -->
+
+                <!-- CONTENEDOR DE PRECIO Y ACCIONES GENERALES -->
+                <div class="price-container custom-mode-price left-aligned">
+                    <span class="price-label">Por</span>
+                    <span class="price-display">{{ precioTotal | number:'1.2-2' }} €</span>
+                </div>
+
+                <div class="action-buttons custom-actions">
+                    <div class="action-row-proportional">
+                        <button class="btn-outline flex-30" (click)="resetearValores()">
+                            <span class="material-symbols-outlined">refresh</span> Resetear
+                        </button>
+                        <button class="btn-primary flex-70" (click)="anadirAlCarrito('medida')">
+                            <span class="material-symbols-outlined">shopping_cart</span> Añadir al carrito
+                        </button>
+                    </div>
+                    <button class="btn-secondary full-width" (click)="terminarProducto()">
+                        <span class="material-symbols-outlined">keyboard_return</span> Terminar y volver al resumen
+                    </button>
+                </div>
+            </ng-container>
+
+        </div>
+    </div>
+</div>
