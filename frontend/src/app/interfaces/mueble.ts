@@ -25,10 +25,18 @@ export interface Mueble {
 export interface ConfigPuerta {
     alto: number;
     ancho: number;
-    grosor: number;
+    grosorDelMarco: number;
     material: string;
     pomo: string;
     cerradura: boolean;
+}
+
+export interface ConfigVentana {
+    alto: number;
+    ancho: number;
+    grosorDelMarco: number;
+    perfilDelExterior: number;
+    material: string;
 }
 
 export interface ConfigEstanteria {

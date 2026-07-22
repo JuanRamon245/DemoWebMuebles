@@ -17,7 +17,6 @@ public class GestorMuebles : MonoBehaviour
 
     void Awake()
     {
-        // >>> CAMBIO: apaga explícitamente habitación y canvas de botones
         if (roomController != null) roomController.SetActive(false);
         if (canvasHabitacion != null) canvasHabitacion.SetActive(false);
 
@@ -66,5 +65,13 @@ public class GestorMuebles : MonoBehaviour
         if (raizPuerta != null) raizPuerta.SetActive(false);
         if (raizVentana != null) raizVentana.SetActive(false);
         if (raizMesa != null) raizMesa.SetActive(false);
+    }
+
+    public void LimpiarMemoriaWebGL()
+    {
+        DesactivarTodos();
+        Resources.UnloadUnusedAssets();
+
+        System.GC.Collect();
     }
 }

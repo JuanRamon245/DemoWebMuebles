@@ -21,14 +21,18 @@
             </div>
 
             <div *ngIf="modoAmedida" class="unity-wrapper">
+                <!-- CONTENEDOR CON AISLAMIENTO DE CAPA DE RENDER -->
                 <div class="unity-container">
-                    <canvas #unityCanvas id="unity-canvas"></canvas>
 
-                    <div *ngIf="!unityCargado" class="unity-placeholder">
+                    <iframe src="unity-visor.html" #unityIframe class="unity-iframe"></iframe>
+
+                    <!-- RECUPERAMOS EL LOADER QUE SE OCULTARÁ AL CARGAR -->
+                    <div *ngIf="mostrarLoader" class="unity-placeholder">
                         <span class="material-symbols-outlined" style="font-size: 3rem;">3d_rotation</span>
-                        <span>Cargando visor 3D de {{ producto.nombre }}...</span>
+                        <span>Cargando visor 3D... {{ progresoCarga }}%</span>
 
                         <div class="barra-progreso">
+                            <!-- El ancho se actualiza dinámicamente de 0 a 100 -->
                             <div class="barra-progreso-relleno" [style.width.%]="progresoCarga"></div>
                         </div>
                     </div>
@@ -115,7 +119,6 @@
 
                 <div class="config-form">
                     <ng-container *ngFor="let campo of esquemaConfig">
-
                         <div class="form-row"
                             *ngIf="!campo.soloSiClave || config[campo.soloSiClave] === campo.soloSiValorEsperado"
                             [ngSwitch]="campo.tipo">
@@ -134,7 +137,6 @@
                                 </div>
                             </ng-container>
 
-                            <!-- TIPO SELECT -->
                             <ng-container *ngSwitchCase="'select'">
                                 <label>{{ campo.etiqueta }}</label>
                                 <select [ngModel]="config[campo.clave]" (ngModelChange)="config[campo.clave] = $event"
@@ -145,7 +147,6 @@
                                 </select>
                             </ng-container>
 
-                            <!-- TIPO CHECKBOX -->
                             <ng-container *ngSwitchCase="'checkbox'">
                                 <div class="checkbox-row">
                                     <input type="checkbox" [id]="campo.clave" [ngModel]="config[campo.clave]"
@@ -158,9 +159,7 @@
                         </div>
                     </ng-container>
                 </div>
-                <!-- >>> CAMBIO FIN -->
 
-                <!-- CONTENEDOR DE PRECIO Y ACCIONES GENERALES -->
                 <div class="price-container custom-mode-price left-aligned">
                     <span class="price-label">Por</span>
                     <span class="price-display">{{ precioTotal | number:'1.2-2' }} €</span>
@@ -180,7 +179,6 @@
                     </button>
                 </div>
             </ng-container>
-
         </div>
     </div>
 </div>

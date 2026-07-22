@@ -92,8 +92,8 @@ public class RoomSizeController : MonoBehaviour
         ActualizarGeometriaMuros();
 
 #if UNITY_EDITOR
-            UnityEditor.EditorApplication.delayCall -= ReconstruirDecoracionSegura;
-            UnityEditor.EditorApplication.delayCall += ReconstruirDecoracionSegura;
+        UnityEditor.EditorApplication.delayCall -= ReconstruirDecoracionSegura;
+        UnityEditor.EditorApplication.delayCall += ReconstruirDecoracionSegura;
 #endif
     }
 
@@ -103,7 +103,7 @@ public class RoomSizeController : MonoBehaviour
         GenerarDecoracionParedes();
 
 #if UNITY_EDITOR
-            UnityEditor.SceneView.RepaintAll();
+        UnityEditor.SceneView.RepaintAll();
 #endif
     }
 
@@ -530,6 +530,11 @@ public class RoomSizeController : MonoBehaviour
 
     private Texture2D GenerarTexturaBordes()
     {
+        if (cuadrculaProcedural != null)
+        {
+            DestroyImmediate(cuadrculaProcedural);
+        }
+
         int resolucion = 128;
         Texture2D tex = new Texture2D(resolucion, resolucion);
         tex.filterMode = FilterMode.Point;

@@ -87,7 +87,45 @@ export class Catalogo implements OnInit {
   categoriaSeleccionada: string = 'todos';
 
   ngOnInit() {
+    this.destruirInstanciaUnityResidual();
     this.mueblesFiltrados = [...this.mueblesOriginales];
+  }
+
+  private destruirInstanciaUnityResidual() {
+    const instance = (window as any).unityInstance;
+    if (instance) {
+      try {
+        // Usamos el método real de GestorMuebles
+        instance.SendMessage('GestorMuebles', 'LimpiarMemoriaWebGL');
+      } catch (e) { }
+
+      try {
+        instance.Quit().then(() => {
+          (window as any).unityInstance = null;
+          this.limpiarDOMScripts();
+        }).catch(() => {
+          (window as any).unityInstance = null;
+          this.limpiarDOMScripts();
+        });
+      } catch (e) {
+        (window as any).unityInstance = null;
+        this.limpiarDOMScripts();
+      }
+    }
+  }
+
+  private limpiarDOMScripts(): void {
+    // Busca y elimina del DOM los scripts cargados dinámicamente por Unity
+    const scripts = Array.from(document.querySelectorAll('script'));
+    scripts.forEach((script) => {
+      if (
+        script.src.includes('.loader.js') ||
+        script.src.includes('.framework.js') ||
+        script.src.includes('Build/')
+      ) {
+        script.remove();
+      }
+    });
   }
 
   filtrarMuebles() {

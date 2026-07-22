@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: transparent;
+        }
+
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="unity-canvas"></canvas>
+    <script src="unity/Build/unity.loader.js"></script>
+    <script>
+        var unityInstance = null;
+        createUnityInstance(document.querySelector("#unity-canvas"), {
+            dataUrl: "unity/Build/unity.data",
+            frameworkUrl: "unity/Build/unity.framework.js",
+            codeUrl: "unity/Build/unity.wasm",
+        }, (progress) => {
+            // NUEVO: Enviamos el progreso a Angular
+            window.parent.postMessage({ type: 'UNITY_PROGRESO', valor: progress }, '*');
+        }).then((instance) => {
+            unityInstance = instance;
+            // Avisar a Angular que ya cargó
+            window.parent.postMessage({ type: 'UNITY_CARGADO' }, '*');
+        }).catch((err) => {
+            console.error("Error cargando Unity:", err);
+        });
+
+        // Escuchar mensajes desde Angular...
+        window.addEventListener('message', function (event) {
+            if (event.data.type === 'MANDAR_A_UNITY' && unityInstance !== null) {
+                var valorSeguro = event.data.valor;
+                if (typeof valorSeguro === 'object' && valorSeguro !== null) {
+                    valorSeguro = JSON.stringify(valorSeguro);
+                }
+                unityInstance.SendMessage(event.data.objeto, event.data.metodo, valorSeguro);
+            }
+        });
+    </script>
+</body>
+
+</html>

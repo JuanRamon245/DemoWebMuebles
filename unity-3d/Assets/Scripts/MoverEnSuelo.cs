@@ -33,6 +33,10 @@ public class MoverEnSuelo : MonoBehaviour
     [ColorUsage(true, true)]
     public Color colorSeleccion = new Color(0f, 0.4f, 1f, 1f);
 
+    [Header("Modo de Interacción")]
+    [Tooltip("Desmarca esto para el Configurador estático para evitar que el clic active flechas o arrastre.")]
+    public bool permitirInteraccion = false;
+
     private Camera camaraPrincipal;
     private bool arrastrando = false;
     private bool seleccionado = false;
@@ -42,6 +46,19 @@ public class MoverEnSuelo : MonoBehaviour
     private Renderer[] renderersHijos;
     private MaterialPropertyBlock propBlock;
     private ParametricShelf estanteria;
+
+    private void Awake()
+    {
+        AutoBuscarFlechasSiNull();
+    }
+
+    private void OnEnable()
+    {
+        AutoBuscarFlechasSiNull();
+        seleccionado = false;
+        arrastrando = false;
+        MostrarFlechas(false);
+    }
 
     void Start()
     {
@@ -62,17 +79,33 @@ public class MoverEnSuelo : MonoBehaviour
 
         MostrarFlechas(false);
 
+        if (!permitirInteraccion)
+            return;
+
         PegarASueloInicial();
+    }
+
+    private void AutoBuscarFlechasSiNull()
+    {
+        Transform[] todosLosHijos = GetComponentsInChildren<Transform>(true);
+
+        foreach (Transform child in todosLosHijos)
+        {
+            if (flechaIzquierda == null && child.name.Equals("FlechaRotarIzq", System.StringComparison.OrdinalIgnoreCase))
+            {
+                flechaIzquierda = child.gameObject;
+            }
+
+            if (flechaDerecha == null && child.name.Equals("FlechaRotarDer", System.StringComparison.OrdinalIgnoreCase))
+            {
+                flechaDerecha = child.gameObject;
+            }
+        }
     }
 
     void PegarASueloInicial()
     {
-        if (sueloReferencia == null)
-        {
-            Debug.LogWarning("MoverEnSuelo: no se ha asignado 'sueloReferencia' en el Inspector.");
-            return;
-        }
-
+        if (sueloReferencia == null) return;
         Collider colSuelo = sueloReferencia.GetComponent<Collider>();
         if (colSuelo == null) return;
 
@@ -92,11 +125,22 @@ public class MoverEnSuelo : MonoBehaviour
 
     void Update()
     {
+        if (!permitirInteraccion)
+        {
+            if (seleccionado || arrastrando || (flechaIzquierda != null && flechaIzquierda.activeSelf) || (flechaDerecha != null && flechaDerecha.activeSelf))
+            {
+                seleccionado = false;
+                arrastrando = false;
+                SetBrilloSeleccion(false);
+                MostrarFlechas(false);
+            }
+            return;
+        }
+
         if (camaraPrincipal == null || Mouse.current == null) return;
 
         Vector2 posicionRaton = Mouse.current.position.ReadValue();
 
-        // 1. CLIC INICIAL
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
             Ray rayoClic = camaraPrincipal.ScreenPointToRay(posicionRaton);
@@ -125,7 +169,7 @@ public class MoverEnSuelo : MonoBehaviour
                     seleccionado = true;
                     arrastrando = true;
                     SetBrilloSeleccion(true);
-                    MostrarFlechas(true);
+                    MostrarFlechas(false);
 
                     if (Physics.Raycast(rayoClic, out RaycastHit hitSuelo, 100f, capaSuelo))
                     {
@@ -150,13 +194,15 @@ public class MoverEnSuelo : MonoBehaviour
             }
         }
 
-        // 2. SOLTAR CLIC: dejamos de ARRASTRAR, pero seguimos "seleccionados"
         if (Mouse.current.leftButton.wasReleasedThisFrame)
         {
-            arrastrando = false;
+            if (arrastrando)
+            {
+                arrastrando = false;
+                if (seleccionado) MostrarFlechas(true);
+            }
         }
 
-        // 3. ARRASTRE ACTIVO
         if (arrastrando)
         {
             Ray rayoArrastre = camaraPrincipal.ScreenPointToRay(posicionRaton);
@@ -167,7 +213,6 @@ public class MoverEnSuelo : MonoBehaviour
                 posicionPropuesta = ClampDentroDelSuelo(posicionPropuesta);
 
                 transform.position = posicionPropuesta;
-
                 ResolverColisionesFisicas();
             }
         }
@@ -224,6 +269,12 @@ public class MoverEnSuelo : MonoBehaviour
 
     void MostrarFlechas(bool mostrar)
     {
+        // Si no se permite la interacción (modo configurador estático), FORZAMOS el apagado de flechas
+        if (!permitirInteraccion)
+        {
+            mostrar = false;
+        }
+
         if (flechaIzquierda != null) flechaIzquierda.SetActive(mostrar);
         if (flechaDerecha != null) flechaDerecha.SetActive(mostrar);
     }
@@ -237,6 +288,13 @@ public class MoverEnSuelo : MonoBehaviour
         {
             if (r == null) continue;
 
+            // Evitamos aplicar brillo de selección a las flechas
+            if ((flechaIzquierda != null && r.transform.IsChildOf(flechaIzquierda.transform)) ||
+                (flechaDerecha != null && r.transform.IsChildOf(flechaDerecha.transform)))
+            {
+                continue;
+            }
+
             foreach (var mat in r.sharedMaterials)
             {
                 if (mat != null) mat.EnableKeyword("_EMISSION");
@@ -247,5 +305,13 @@ public class MoverEnSuelo : MonoBehaviour
             propBlock.SetColor("_EmissionColor", colorFinal);
             r.SetPropertyBlock(propBlock);
         }
+    }
+
+    void OnDisable()
+    {
+        seleccionado = false;
+        arrastrando = false;
+        SetBrilloSeleccion(false);
+        MostrarFlechas(false);
     }
 }

@@ -15,6 +15,10 @@ public class ParametricWindow : MonoBehaviour
     [Tooltip("Anchura visual del perfil del marco exterior (cara que mira al usuario en X/Y).")]
     [Range(0.03f, 0.15f)] public float perfilExterior = 0.06f;
 
+    [Range(0f, 270f)]
+    [Tooltip("Orientación de la puerta en incrementos de 90 grados.")]
+    private float rotacionY = 0f;
+
     [Header("Configuración Visual")]
     public TipoMaterial materialActual = TipoMaterial.Madera1;
 
@@ -68,6 +72,63 @@ public class ParametricWindow : MonoBehaviour
     void EjecutarActualizacionSegura()
     {
         if (this == null) return;
+        ActualizarVentana();
+    }
+
+    public void SetAlto(float valor)
+    {
+        altoVentana = valor;
+        ActualizarVentana();
+    }
+
+    public void SetAncho(float valor)
+    {
+        anchoVentana = valor;
+        ActualizarVentana();
+    }
+
+    public void SetGrosorMarco(float valor)
+    {
+        grosorMarco = valor;
+        ActualizarVentana();
+    }
+
+    public void SetPerfilExterior(float valor)
+    {
+        perfilExterior = valor;
+        ActualizarVentana();
+    }
+
+    public void SetMaterial(string valor)
+    {
+        switch (valor)
+        {
+            case "Abedul": materialActual = TipoMaterial.Madera1; break;
+            case "Cerezo": materialActual = TipoMaterial.Madera2; break;
+            case "Nogal": materialActual = TipoMaterial.Madera3; break;
+            case "PVC": materialActual = TipoMaterial.PlasticoGris; break;
+            default:
+                Debug.LogWarning($"Material '{valor}' sin mapeo definido en SetMaterial()");
+                break;
+        }
+        AplicarLogicaMaterialesYComponentes();
+    }
+
+    [System.Serializable]
+    private class ConfigVentanaJson
+    {
+        public float alto, ancho, grosorDelMarco, perfilDelExterior;
+        public string material;
+    }
+
+    public void AplicarConfiguracion(string json)
+    {
+        var cfg = JsonUtility.FromJson<ConfigVentanaJson>(json);
+        altoVentana = cfg.alto;
+        anchoVentana = cfg.ancho;
+        grosorMarco = cfg.grosorDelMarco;
+        perfilExterior = cfg.perfilDelExterior;
+        SetMaterial(cfg.material);
         ActualizarVentana();
     }
 
@@ -156,7 +217,7 @@ public class ParametricWindow : MonoBehaviour
         t.localScale = new Vector3(MANILLAR_LARGO, MANILLAR_ALTO, MANILLAR_FONDO);
         t.localRotation = Quaternion.identity;
 
-        float saliente = GROSOR_HOJA / 2f + MANILLAR_FONDO / 2f;
+        float saliente = -(GROSOR_HOJA / 2f + MANILLAR_FONDO / 2f);
         float offsetX = -MANILLAR_LARGO / 2f;
 
         t.localPosition = new Vector3(posX + offsetX, altura, saliente);
@@ -244,5 +305,12 @@ public class ParametricWindow : MonoBehaviour
         {
             r.sharedMaterial = mat;
         }
+    }
+
+    public void Rotar90(float direccion)
+    {
+        float signo = direccion >= 0 ? 1f : -1f;
+        rotacionY = (rotacionY + 90f * signo + 360f) % 360f;
+        transform.localRotation = Quaternion.Euler(0f, rotacionY, 0f);
     }
 }

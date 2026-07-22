@@ -16,19 +16,15 @@ public class ParametricShelf : MonoBehaviour
     [Range(0.02f, 0.08f)] public float grosorEstructura = 0.03f;
 
     [Header("Márgenes (Espaciado)")]
-    [Tooltip("Si está activo, el margen superior e inferior siempre serán iguales.")]
     public bool margenSimetrico = true;
     [Range(0.05f, 0.6f)] public float margenSuperior = 0.15f;
     [Range(0.05f, 0.6f)] public float margenInferior = 0.15f;
 
     [Header("Distribución de Baldas")]
-    [Tooltip("Total de baldas incluyendo Techo y Suelo (Mínimo 4 = Techo + Suelo + 2 Intermedias)")]
     [Range(4, 10)] public int totalBaldas = 5;
 
     [Header("Configuración Visual")]
     public TipoMaterial materialActual = TipoMaterial.Madera1;
-    [Range(0f, 270f)]
-    [Tooltip("Orientación del mueble en incrementos de 90 grados.")]
     private float rotacionY = 0f;
 
     [Header("Materiales (Asignar en Inspector)")]
@@ -42,12 +38,23 @@ public class ParametricShelf : MonoBehaviour
     public Transform techo;
     public Transform suelo;
     public Transform fondo;
-    [Tooltip("Arrastra aquí un GameObject vacío que contendrá las baldas intermedias.")]
     public Transform contenedorBaldas;
+
+    [Header("Prefabs Optimización")]
+    [Tooltip("Asigna aquí un prefab base para la balda (un Cubo sencillo con MeshFilter y MeshRenderer)")]
+    public GameObject prefabBalda;
 
     private float ultimoMargenSuperior;
     private float ultimoMargenInferior;
     private BoxCollider boxCollider;
+
+    // OPTIMIZACIÓN WEBGL: Reutilizar el bloque de propiedades para no saturar el GC
+    private MaterialPropertyBlock propBlock;
+
+    void Awake()
+    {
+        propBlock = new MaterialPropertyBlock();
+    }
 
     void OnValidate()
     {
@@ -86,53 +93,14 @@ public class ParametricShelf : MonoBehaviour
         ActualizarEstanteria();
     }
 
-    public void SetAlto(float valor)
-    {
-        altoEstanteria = valor;
-        ActualizarEstanteria();
-    }
-
-    public void SetAncho(float valor)
-    {
-        anchoEstanteria = valor;
-        ActualizarEstanteria();
-    }
-
-    public void SetProfundidad(float valor)
-    {
-        profundidadEstanteria = valor;
-        ActualizarEstanteria();
-    }
-
-    public void SetTamanoBaldas(float valor)
-    {
-        grosorBaldasHorizontales = valor;
-        ActualizarEstanteria();
-    }
-
-    public void SetNumBaldas(float valor)
-    {
-        totalBaldas = Mathf.RoundToInt(valor);
-        ActualizarEstanteria();
-    }
-
-    public void SetMargenSuperior(float valor)
-    {
-        margenSuperior = valor;
-        ActualizarEstanteria();
-    }
-
-    public void SetMargenInferior(float valor)
-    {
-        margenInferior = valor;
-        ActualizarEstanteria();
-    }
-
-    public void SetMargenSimetrico(float valor)
-    {
-        margenSimetrico = valor > 0.5f;
-        ActualizarEstanteria();
-    }
+    public void SetAlto(float valor) { altoEstanteria = valor; ActualizarEstanteria(); }
+    public void SetAncho(float valor) { anchoEstanteria = valor; ActualizarEstanteria(); }
+    public void SetProfundidad(float valor) { profundidadEstanteria = valor; ActualizarEstanteria(); }
+    public void SetTamanoBaldas(float valor) { grosorBaldasHorizontales = valor; ActualizarEstanteria(); }
+    public void SetNumBaldas(float valor) { totalBaldas = Mathf.RoundToInt(valor); ActualizarEstanteria(); }
+    public void SetMargenSuperior(float valor) { margenSuperior = valor; ActualizarEstanteria(); }
+    public void SetMargenInferior(float valor) { margenInferior = valor; ActualizarEstanteria(); }
+    public void SetMargenSimetrico(float valor) { margenSimetrico = valor > 0.5f; ActualizarEstanteria(); }
 
     public void SetMaterial(string valor)
     {
@@ -142,7 +110,7 @@ public class ParametricShelf : MonoBehaviour
             case "Cerezo": materialActual = TipoMaterial.Madera2; break;
             case "Nogal": materialActual = TipoMaterial.Madera3; break;
             default:
-                Debug.LogWarning($"Material '{valor}' sin mapeo definido en SetMaterial()");
+                Debug.LogWarning($"Material '{valor}' sin mapeo definido");
                 break;
         }
         AplicarMateriales();
@@ -191,7 +159,7 @@ public class ParametricShelf : MonoBehaviour
 
         float altoInteriorY = altoEstanteria - (grosorEstructura * 2f);
         fondo.localScale = new Vector3(anchoInterior, altoInteriorY, grosorEstructura);
-        fondo.localPosition = new Vector3(0f, altoEstanteria / 2f, -profundidadEstanteria / 2f + grosorEstructura / 2f);
+        fondo.localPosition = new Vector3(0f, altoEstanteria / 2f, profundidadEstanteria / 2f - grosorEstructura / 2f);
 
         float espacioDisponibleY = altoEstanteria - (grosorEstructura * 2f) - margenSuperior - margenInferior;
 
@@ -205,34 +173,39 @@ public class ParametricShelf : MonoBehaviour
         }
 
         int numIntermediasDeseadas = totalBaldas - 2;
-
         int maxIntermediasPosibles = Mathf.FloorToInt((espacioDisponibleY - 0.3f) / (0.3f + grosorBaldasHorizontales));
-        maxIntermediasPosibles = Mathf.Max(2, maxIntermediasPosibles);
+        maxIntermediasPosibles = Mathf.Max(1, maxIntermediasPosibles);
 
-        int numIntermediasEfectivas = Mathf.Clamp(numIntermediasDeseadas, 2, maxIntermediasPosibles);
-
+        int numIntermediasEfectivas = Mathf.Clamp(numIntermediasDeseadas, 1, maxIntermediasPosibles);
         totalBaldas = numIntermediasEfectivas + 2;
-
-        float aireEntreBaldas = (espacioDisponibleY - (numIntermediasEfectivas * grosorBaldasHorizontales)) / (numIntermediasEfectivas - 1);
 
         AjustarPoolDeBaldas(numIntermediasEfectivas);
 
         float profBaldaIntermedia = profundidadEstanteria - grosorEstructura;
         float zBaldaIntermedia = grosorEstructura / 2f;
-
         float yInicio = grosorEstructura + margenInferior;
 
-        for (int i = 0; i < numIntermediasEfectivas; i++)
+        if (numIntermediasEfectivas == 1)
         {
-            Transform balda = contenedorBaldas.GetChild(i);
+            Transform balda = contenedorBaldas.GetChild(0);
             balda.localScale = new Vector3(anchoInterior, grosorBaldasHorizontales, profBaldaIntermedia);
-
-            float posY = yInicio + (grosorBaldasHorizontales / 2f) + i * (aireEntreBaldas + grosorBaldasHorizontales);
+            float posY = yInicio + (espacioDisponibleY / 2f);
             balda.localPosition = new Vector3(0f, posY, zBaldaIntermedia);
+        }
+        else if (numIntermediasEfectivas > 1)
+        {
+            float aireSeparacion = (espacioDisponibleY - (numIntermediasEfectivas * grosorBaldasHorizontales)) / (numIntermediasEfectivas - 1);
+            for (int i = 0; i < numIntermediasEfectivas; i++)
+            {
+                Transform balda = contenedorBaldas.GetChild(i);
+                balda.localScale = new Vector3(anchoInterior, grosorBaldasHorizontales, profBaldaIntermedia);
+
+                float posY = yInicio + (grosorBaldasHorizontales / 2f) + i * (aireSeparacion + grosorBaldasHorizontales);
+                balda.localPosition = new Vector3(0f, posY, zBaldaIntermedia);
+            }
         }
 
         ActualizarCollider();
-
         AplicarMateriales();
     }
 
@@ -246,12 +219,23 @@ public class ParametricShelf : MonoBehaviour
 
         while (contenedorBaldas.childCount < cantidadRequerida)
         {
-            GameObject nuevaBalda = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            nuevaBalda.name = "Balda_Intermedia_" + contenedorBaldas.childCount;
-            nuevaBalda.transform.SetParent(contenedorBaldas);
+            GameObject nuevaBalda;
 
-            Collider c = nuevaBalda.GetComponent<Collider>();
-            if (c != null) DestroyImmediate(c);
+            // OPTIMIZACIÓN WEBGL: Clonar Prefab en lugar de usar CreatePrimitive
+            if (prefabBalda != null)
+            {
+                nuevaBalda = Instantiate(prefabBalda, contenedorBaldas);
+            }
+            else
+            {
+                // Fallback por si no se asignó Prefab en el Inspector
+                nuevaBalda = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                nuevaBalda.transform.SetParent(contenedorBaldas);
+                Collider c = nuevaBalda.GetComponent<Collider>();
+                if (c != null) DestroyImmediate(c);
+            }
+
+            nuevaBalda.name = "Balda_Intermedia_" + contenedorBaldas.childCount;
         }
     }
 
@@ -305,20 +289,15 @@ public class ParametricShelf : MonoBehaviour
         r.sharedMaterial = mat;
         mat.EnableKeyword("_EMISSION");
 
-        MaterialPropertyBlock block = new MaterialPropertyBlock();
-        r.GetPropertyBlock(block);
+        // OPTIMIZACIÓN CRÍTICA: Reutilizar 'propBlock' en lugar de instanciar uno nuevo
+        if (propBlock == null) propBlock = new MaterialPropertyBlock();
+        r.GetPropertyBlock(propBlock);
 
         Vector4 tilingOffset = new Vector4(scaleX, scaleY, 0, 0);
-        block.SetVector("_MainTex_ST", tilingOffset);
-        block.SetVector("_BaseMap_ST", tilingOffset);
+        propBlock.SetVector("_MainTex_ST", tilingOffset);
+        propBlock.SetVector("_BaseMap_ST", tilingOffset);
 
-        r.SetPropertyBlock(block);
-    }
-
-    // --- LOGICA DE ROTACIÓN ---
-    public void Rotar90()
-    {
-        Rotar90(1f);
+        r.SetPropertyBlock(propBlock);
     }
 
     public void Rotar90(float direccion)
